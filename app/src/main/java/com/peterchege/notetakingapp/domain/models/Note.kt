@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp
+package com.peterchege.notetakingapp.domain.models
 
-import org.junit.Test
+data class Note (
+    val noteId:String,
+    val noteTitle:String,
+    val noteContent:String,
+    val noteColor:Int,
+    val noteAuthorId:String,
+    val noteCreatedAt:String,
+    val noteCreatedOn:String,
 
-import org.junit.Assert.*
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
-class ExampleUnitTest {
-    @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
-    }
-}
+)

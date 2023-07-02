@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "713499181579",
+    "project_id": "notetakingapp-e7047",
+    "storage_bucket": "notetakingapp-e7047.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:713499181579:android:57be7aa59b6c3a7b493d0e",
+        "android_client_info": {
+          "package_name": "com.peterchege.notetakingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "713499181579-dudia3m650k6om471hiqkqhghg3pmq1o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChYPYLcqWhqYrbeGjJyLRpn8FmykwF5Qo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "713499181579-dudia3m650k6om471hiqkqhghg3pmq1o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
