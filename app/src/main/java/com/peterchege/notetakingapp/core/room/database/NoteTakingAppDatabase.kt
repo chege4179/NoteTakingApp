@@ -16,6 +16,8 @@
 package com.peterchege.notetakingapp.core.room.database
 
 import androidx.room.Database
+import androidx.room.RoomDatabase
+import com.peterchege.notetakingapp.core.room.dao.NoteDao
 import com.peterchege.notetakingapp.core.room.entites.NoteEntity
 
 
@@ -26,5 +28,8 @@ import com.peterchege.notetakingapp.core.room.entites.NoteEntity
     version = 1,
     exportSchema = true
 )
-abstract class NoteTakingAppDatabase {
+abstract class NoteTakingAppDatabase:RoomDatabase() {
+
+
+    abstract val noteDao:NoteDao
 }

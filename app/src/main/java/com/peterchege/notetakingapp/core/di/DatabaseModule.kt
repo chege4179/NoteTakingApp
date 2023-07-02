@@ -15,8 +15,25 @@
  */
 package com.peterchege.notetakingapp.core.di
 
+import androidx.room.Room
+import com.peterchege.notetakingapp.core.room.dao.NoteDao
+import com.peterchege.notetakingapp.core.room.database.NoteTakingAppDatabase
+import com.peterchege.notetakingapp.core.util.Constants
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val databaseModule = module {
+
+    single<NoteTakingAppDatabase> {
+        Room.databaseBuilder(
+            androidContext(),
+            NoteTakingAppDatabase::class.java,
+            Constants.DATABASE_NAME,
+        )
+            .fallbackToDestructiveMigration()
+            .build()
+
+
+    }
 
 }

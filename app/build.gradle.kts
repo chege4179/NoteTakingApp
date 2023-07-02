@@ -4,7 +4,7 @@ plugins {
     id ("com.google.gms.google-services")
     id ("com.google.firebase.crashlytics")
     id("org.jetbrains.kotlin.plugin.serialization")
-    id("com.google.devtools.ksp") version "1.8.20-1.0.11"
+    id("com.google.devtools.ksp") version "1.8.21-1.0.11"
 }
 
 android {
@@ -37,17 +37,17 @@ android {
         arg("room.schemaLocation", "$projectDir/schemas")
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
     buildFeatures {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = "1.4.7"
     }
     packaging {
         resources {
@@ -56,10 +56,21 @@ android {
     }
 }
 
+kotlin {
+    sourceSets {
+        getByName( "debug") {
+            kotlin.srcDir("build/generated/ksp/debug/kotlin")
+        }
+        getByName("release") {
+            kotlin.srcDir("build/generated/ksp/release/kotlin")
+        }
+    }
+}
+
+
 dependencies {
 
     implementation("androidx.core:core-ktx:1.10.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.activity:activity-compose:1.7.2")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.compose.ui:ui")
@@ -76,6 +87,11 @@ dependencies {
 
     implementation("androidx.compose.foundation:foundation:1.4.3")
     implementation("androidx.compose.foundation:foundation-layout:1.4.3")
+
+
+    // compose destinations
+    implementation("io.github.raamcosta.compose-destinations:core:1.9.42-beta")
+    ksp("io.github.raamcosta.compose-destinations:ksp:1.9.42-beta")
 
 
     // view model

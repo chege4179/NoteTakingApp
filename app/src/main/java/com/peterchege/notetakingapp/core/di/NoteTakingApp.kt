@@ -16,19 +16,36 @@
 package com.peterchege.notetakingapp.core.di
 
 import android.app.Application
+import com.google.firebase.crashlytics.BuildConfig
+import com.peterchege.notetakingapp.core.crashlytics.CrashlyticsTree
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
+import timber.log.Timber
 
 class NoteTakingApp:Application(){
 
     override fun onCreate() {
         super.onCreate()
 
+        initTimber()
         startKoin {
             androidLogger()
             androidContext(this@NoteTakingApp)
-            modules(databaseModule )
+            modules(databaseModule + dispatchersModule )
+        }
+    }
+
+    private fun initTimber() = when {
+        BuildConfig.DEBUG -> {
+            Timber.plant(object : Timber.DebugTree() {
+                override fun createStackElementTag(element: StackTraceElement): String {
+                    return super.createStackElementTag(element) + ":" + element.lineNumber
+                }
+            })
+        }
+        else -> {
+            Timber.plant(CrashlyticsTree())
         }
     }
 }
