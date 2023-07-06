@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "1c297d7c38e0c649dda1cc528b00af00",
+    "identityHash": "bc41cf4409f6b385cdc687fdc9e35844",
     "entities": [
       {
         "tableName": "notes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`noteId` TEXT NOT NULL, `noteTitle` TEXT NOT NULL, `noteContent` TEXT NOT NULL, `noteColor` INTEGER NOT NULL, `noteAuthorId` TEXT NOT NULL, `noteCreatedAt` TEXT NOT NULL, `noteCreatedOn` TEXT NOT NULL, PRIMARY KEY(`noteId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`noteId` TEXT NOT NULL, `noteTitle` TEXT NOT NULL, `noteContent` TEXT NOT NULL, `noteColor` INTEGER NOT NULL, `noteAuthorId` TEXT NOT NULL, `noteCreatedAt` TEXT NOT NULL, `noteCreatedOn` TEXT NOT NULL, `isInSync` INTEGER NOT NULL, PRIMARY KEY(`noteId`))",
         "fields": [
           {
             "fieldPath": "noteId",
@@ -49,6 +49,12 @@
             "columnName": "noteCreatedOn",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "isInSync",
+            "columnName": "isInSync",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -64,7 +70,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1c297d7c38e0c649dda1cc528b00af00')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bc41cf4409f6b385cdc687fdc9e35844')"
     ]
   }
 }

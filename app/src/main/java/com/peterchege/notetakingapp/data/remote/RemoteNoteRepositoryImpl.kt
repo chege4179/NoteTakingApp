@@ -13,17 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.core.di
+package com.peterchege.notetakingapp.data.remote
 
-import com.peterchege.notetakingapp.core.util.DefaultDispatcherProvider
-import com.peterchege.notetakingapp.core.util.DispatcherProvider
-import kotlinx.coroutines.Dispatchers
-import org.koin.dsl.module
+import com.peterchege.notetakingapp.domain.models.Note
+import kotlinx.coroutines.flow.Flow
 
-val dispatchersModule = module {
+class RemoteNoteRepositoryImpl(
 
-    single<DispatcherProvider> {
-        DefaultDispatcherProvider()
+):RemoteNoteRepository {
+    override fun getAllRemoteNotes(authorId: String): Flow<List<Note>> {
+        TODO("Not yet implemented")
     }
+
+    override suspend fun deleteAllNotes(authorId: String) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteNoteById(noteId: String) {
+        TODO("Not yet implemented")
+    }
+
 
 }

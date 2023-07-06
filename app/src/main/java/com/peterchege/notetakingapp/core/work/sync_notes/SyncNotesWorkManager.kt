@@ -13,17 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.core.di
+package com.peterchege.notetakingapp.core.work.sync_notes
 
-import com.peterchege.notetakingapp.core.util.DefaultDispatcherProvider
-import com.peterchege.notetakingapp.core.util.DispatcherProvider
-import kotlinx.coroutines.Dispatchers
-import org.koin.dsl.module
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
-val dispatchersModule = module {
 
-    single<DispatcherProvider> {
-        DefaultDispatcherProvider()
+interface SyncNotesWorkManager {
+    val isSyncing: Flow<Boolean>
+
+    suspend fun startSyncingNotes(noteAuthorId:String)
+
+
+
+}
+class SyncNotesWorkManagerImpl ():SyncNotesWorkManager {
+
+    override val isSyncing: Flow<Boolean> = flow { emit(true) }
+
+
+    override suspend fun startSyncingNotes(noteAuthorId: String) {
+        TODO("Not yet implemented")
     }
 
 }

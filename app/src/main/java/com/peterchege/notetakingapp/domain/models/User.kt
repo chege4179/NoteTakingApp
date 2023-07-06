@@ -13,17 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.core.di
+package com.peterchege.notetakingapp.domain.models
 
-import com.peterchege.notetakingapp.core.util.DefaultDispatcherProvider
-import com.peterchege.notetakingapp.core.util.DispatcherProvider
-import kotlinx.coroutines.Dispatchers
-import org.koin.dsl.module
-
-val dispatchersModule = module {
-
-    single<DispatcherProvider> {
-        DefaultDispatcherProvider()
-    }
-
-}
+data class User(
+    val email:String,
+    val name:String,
+    val userId:String,
+)

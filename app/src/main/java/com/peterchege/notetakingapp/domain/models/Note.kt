@@ -23,6 +23,7 @@ data class Note (
     val noteAuthorId:String,
     val noteCreatedAt:String,
     val noteCreatedOn:String,
+    val isInSync:Boolean
 
 
 )

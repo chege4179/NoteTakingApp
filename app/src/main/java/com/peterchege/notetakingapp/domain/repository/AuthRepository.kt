@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.core.di
+package com.peterchege.notetakingapp.domain.repository
 
-import com.peterchege.notetakingapp.core.util.DefaultDispatcherProvider
-import com.peterchege.notetakingapp.core.util.DispatcherProvider
-import kotlinx.coroutines.Dispatchers
-import org.koin.dsl.module
+import com.peterchege.notetakingapp.domain.models.AuthResult
+import com.peterchege.notetakingapp.domain.models.User
+import kotlinx.coroutines.flow.Flow
 
-val dispatchersModule = module {
+interface AuthRepository {
 
-    single<DispatcherProvider> {
-        DefaultDispatcherProvider()
-    }
+    fun getAuthUser(): Flow<User?>
+
+    fun loginUser(email:String,password:String):Flow<AuthResult>
+
+   fun signUpUser(email: String, password:String):Flow<AuthResult>
+
+   fun signOutUser(email:String,password: String)
 
 }

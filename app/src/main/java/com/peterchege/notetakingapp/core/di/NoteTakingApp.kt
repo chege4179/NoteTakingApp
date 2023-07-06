@@ -32,7 +32,8 @@ class NoteTakingApp:Application(){
         startKoin {
             androidLogger()
             androidContext(this@NoteTakingApp)
-            modules(databaseModule + dispatchersModule )
+            modules(databaseModule + firebaseModule + dispatchersModule + repositoryModule
+                    + viewModelModule + workModule + datastoreModule)
         }
     }
 

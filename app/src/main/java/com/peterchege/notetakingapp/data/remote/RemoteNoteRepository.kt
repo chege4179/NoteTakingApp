@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.core.di
+package com.peterchege.notetakingapp.data.remote
 
-import com.peterchege.notetakingapp.core.util.DefaultDispatcherProvider
-import com.peterchege.notetakingapp.core.util.DispatcherProvider
-import kotlinx.coroutines.Dispatchers
-import org.koin.dsl.module
+import com.peterchege.notetakingapp.domain.models.Note
+import kotlinx.coroutines.flow.Flow
 
-val dispatchersModule = module {
+interface RemoteNoteRepository {
 
-    single<DispatcherProvider> {
-        DefaultDispatcherProvider()
-    }
+    fun getAllRemoteNotes(authorId:String): Flow<List<Note>>
 
+    suspend fun deleteAllNotes(authorId: String)
+
+
+    suspend fun deleteNoteById(noteId:String)
 }

@@ -15,15 +15,22 @@
  */
 package com.peterchege.notetakingapp.core.di
 
-import com.peterchege.notetakingapp.core.util.DefaultDispatcherProvider
-import com.peterchege.notetakingapp.core.util.DispatcherProvider
-import kotlinx.coroutines.Dispatchers
+import com.peterchege.notetakingapp.ui.screens.all_notes.AllNotesScreenViewModel
+import com.peterchege.notetakingapp.ui.screens.auth.AuthScreenViewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-val dispatchersModule = module {
+val viewModelModule = module {
 
-    single<DispatcherProvider> {
-        DefaultDispatcherProvider()
+    viewModel<AuthScreenViewModel> {
+        AuthScreenViewModel(
+            authRepository = get(),
+            networkRepository = get()
+        )
     }
-
+    viewModel<AllNotesScreenViewModel> {
+        AllNotesScreenViewModel(
+            noteRepository = get()
+        )
+    }
 }

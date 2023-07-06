@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.core.di
+package com.peterchege.notetakingapp.domain.repository
 
-import com.peterchege.notetakingapp.core.util.DefaultDispatcherProvider
-import com.peterchege.notetakingapp.core.util.DispatcherProvider
-import kotlinx.coroutines.Dispatchers
-import org.koin.dsl.module
+import kotlinx.coroutines.flow.Flow
 
-val dispatchersModule = module {
+sealed class NetworkStatus {
+    object Unknown: NetworkStatus()
+    object Connected: NetworkStatus()
+    object Disconnected: NetworkStatus()
+}
+interface NetworkInfoRepository {
 
-    single<DispatcherProvider> {
-        DefaultDispatcherProvider()
-    }
+    val networkStatus: Flow<NetworkStatus>
 
+    
 }

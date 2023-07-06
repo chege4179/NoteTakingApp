@@ -13,17 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.core.di
+package com.peterchege.notetakingapp.core.work.add_note
 
-import com.peterchege.notetakingapp.core.util.DefaultDispatcherProvider
-import com.peterchege.notetakingapp.core.util.DispatcherProvider
-import kotlinx.coroutines.Dispatchers
-import org.koin.dsl.module
+import com.peterchege.notetakingapp.domain.models.Note
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
-val dispatchersModule = module {
+interface AddNoteWorkManager {
+    val isUploading: Flow<Boolean>
 
-    single<DispatcherProvider> {
-        DefaultDispatcherProvider()
+    suspend fun startUploadingNote(note: Note)
+
+
+
+}
+class AddNoteWorkManagerImpl():AddNoteWorkManager {
+
+    override val isUploading: Flow<Boolean> = flow { emit(true) }
+
+
+    override suspend fun startUploadingNote(note:Note) {
+        TODO("Not yet implemented")
     }
 
 }

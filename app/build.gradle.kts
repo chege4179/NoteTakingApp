@@ -9,12 +9,12 @@ plugins {
 
 android {
     namespace = "com.peterchege.notetakingapp"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.peterchege.notetakingapp"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -87,6 +87,7 @@ dependencies {
 
     implementation("androidx.compose.foundation:foundation:1.4.3")
     implementation("androidx.compose.foundation:foundation-layout:1.4.3")
+    implementation ("androidx.compose.material:material-icons-extended:1.6.0-alpha01")
 
 
     // compose destinations

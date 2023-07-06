@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.core.di
+package com.peterchege.notetakingapp.data.local
 
-import com.peterchege.notetakingapp.core.util.DefaultDispatcherProvider
-import com.peterchege.notetakingapp.core.util.DispatcherProvider
-import kotlinx.coroutines.Dispatchers
-import org.koin.dsl.module
+import com.peterchege.notetakingapp.domain.models.Note
+import kotlinx.coroutines.flow.Flow
 
-val dispatchersModule = module {
+interface LocalNoteRepository {
 
-    single<DispatcherProvider> {
-        DefaultDispatcherProvider()
-    }
+    fun getLocalNotes(): Flow<List<Note>>
+
+
+    fun getLocalNoteById(noteId:String):Flow<Note?>
+
+
+    suspend fun deleteLocalNoteById()
 
 }

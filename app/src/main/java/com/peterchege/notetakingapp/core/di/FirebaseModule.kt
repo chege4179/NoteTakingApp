@@ -15,15 +15,13 @@
  */
 package com.peterchege.notetakingapp.core.di
 
-import com.peterchege.notetakingapp.core.util.DefaultDispatcherProvider
-import com.peterchege.notetakingapp.core.util.DispatcherProvider
-import kotlinx.coroutines.Dispatchers
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import org.koin.dsl.module
 
-val dispatchersModule = module {
-
-    single<DispatcherProvider> {
-        DefaultDispatcherProvider()
+val firebaseModule = module {
+    single<FirebaseAuth> {
+        Firebase.auth
     }
-
 }
