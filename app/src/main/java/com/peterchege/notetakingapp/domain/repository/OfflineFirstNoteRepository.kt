@@ -22,4 +22,7 @@ interface OfflineFirstNoteRepository {
 
 
     fun getAllNotes(): Flow<List<Note>>
+
+
+    suspend fun addNote(note:Note)
 }

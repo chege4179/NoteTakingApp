@@ -28,4 +28,6 @@ interface LocalNoteRepository {
 
     suspend fun deleteLocalNoteById()
 
+    suspend fun addNote(note:Note)
+
 }

@@ -22,6 +22,9 @@ import com.peterchege.notetakingapp.core.util.UiEvent
 import com.peterchege.notetakingapp.domain.models.Note
 import com.peterchege.notetakingapp.domain.models.User
 import com.peterchege.notetakingapp.domain.repository.AuthRepository
+import com.peterchege.notetakingapp.domain.repository.OfflineFirstNoteRepository
+import com.peterchege.notetakingapp.ui.screens.destinations.AllNotesScreenDestination
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,6 +33,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.UUID
 
 
@@ -43,6 +47,7 @@ data class NoteFormState(
 class AddNoteScreenViewModel(
     val dispatcherProvider: DispatcherProvider,
     val authRepository: AuthRepository,
+    val noteRepository: OfflineFirstNoteRepository,
 
     ) : ViewModel() {
 
@@ -90,6 +95,21 @@ class AddNoteScreenViewModel(
                 isInSync = true,
 
             )
+            try {
+                noteRepository.addNote(note = note)
+                _eventFlow.emit(UiEvent.ShowSnackbar(message = "Note saved successfully"))
+                _noteState.value = _noteState.value.copy(
+                    noteTitle = "",
+                    noteContent = "",
+                )
+                delay(500L)
+                _eventFlow.emit(UiEvent.Navigate(AllNotesScreenDestination))
+            }catch (e:Throwable){
+                Timber.tag("Note creation error").d(e)
+                _eventFlow.emit(UiEvent.ShowSnackbar(message =
+                e.message ?: "An error occurred while saving the note"))
+            }
+
         }
     }
 

@@ -16,6 +16,7 @@
 package com.peterchege.notetakingapp.data.local
 
 import com.peterchege.notetakingapp.core.room.database.NoteTakingAppDatabase
+import com.peterchege.notetakingapp.domain.mappers.toEntity
 import com.peterchege.notetakingapp.domain.mappers.toExternalListModel
 import com.peterchege.notetakingapp.domain.mappers.toExternalModel
 import com.peterchege.notetakingapp.domain.models.Note
@@ -35,5 +36,9 @@ class LocalNoteRepositoryImpl(
 
     override suspend fun deleteLocalNoteById() {
         return db.noteDao.deleteAllCachedNotes()
+    }
+
+    override suspend fun addNote(note: Note) {
+        return db.noteDao.insertCachedNote(noteEntity = note.toEntity())
     }
 }

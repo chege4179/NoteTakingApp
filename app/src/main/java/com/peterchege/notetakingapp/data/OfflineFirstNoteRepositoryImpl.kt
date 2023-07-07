@@ -22,6 +22,7 @@ import com.peterchege.notetakingapp.domain.models.Note
 import com.peterchege.notetakingapp.domain.repository.OfflineFirstNoteRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 
 class OfflineFirstNoteRepositoryImpl (
     val localNoteRepository: LocalNoteRepository,
@@ -32,4 +33,11 @@ class OfflineFirstNoteRepositoryImpl (
     override fun getAllNotes(): Flow<List<Note>> {
         return localNoteRepository.getLocalNotes().flowOn(dispatcherProvider.io)
     }
+
+    override suspend fun addNote(note: Note) {
+        withContext(dispatcherProvider.io){
+            localNoteRepository.addNote(note = note)
+        }
+    }
+
 }

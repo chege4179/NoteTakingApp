@@ -20,10 +20,11 @@ import com.google.firebase.crashlytics.BuildConfig
 import com.peterchege.notetakingapp.core.crashlytics.CrashlyticsTree
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
+import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
 import timber.log.Timber
 
-class NoteTakingApp:Application(){
+class NoteTakingApp:Application(),KoinComponent{
 
     override fun onCreate() {
         super.onCreate()
@@ -36,6 +37,7 @@ class NoteTakingApp:Application(){
                     + viewModelModule + workModule + datastoreModule)
         }
     }
+
 
     private fun initTimber() = when {
         BuildConfig.DEBUG -> {
