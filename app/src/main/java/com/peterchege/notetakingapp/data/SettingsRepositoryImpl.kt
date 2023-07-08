@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.core.util
+package com.peterchege.notetakingapp.data
 
-import com.peterchege.notetakingapp.ui.theme.BabyBlue
-import com.peterchege.notetakingapp.ui.theme.LightGreen
-import com.peterchege.notetakingapp.ui.theme.RedOrange
-import com.peterchege.notetakingapp.ui.theme.RedPink
-import com.peterchege.notetakingapp.ui.theme.Violet
+import com.peterchege.notetakingapp.core.datastore.repository.UserSettingsRepository
+import com.peterchege.notetakingapp.domain.repository.SettingsRepository
+import kotlinx.coroutines.flow.Flow
 
-object Constants {
+class SettingsRepositoryImpl (
+    val userSettingsRepository: UserSettingsRepository
+) :SettingsRepository{
+    override suspend fun setTheme(themeValue: String) {
+        return userSettingsRepository.setTheme(themeValue = themeValue)
+    }
 
-    const val DATABASE_NAME = "note_app.db"
-
-    const val LIGHT_MODE = "LIGHT_MODE"
-    const val DARK_MODE = "DARK_MODE"
-
-    const val USER_PREFERENCES = "USER_PREFERENCES"
+    override fun getTheme(): Flow<String> {
+        return userSettingsRepository.getTheme()
+    }
 
 
-    val noteBackgroundColors = listOf(RedOrange, LightGreen, Violet, BabyBlue, RedPink)
 }

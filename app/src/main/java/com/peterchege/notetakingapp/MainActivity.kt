@@ -22,25 +22,45 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.peterchege.notetakingapp.core.util.Constants
+import com.peterchege.notetakingapp.domain.repository.SettingsRepository
 import com.peterchege.notetakingapp.ui.screens.NavGraph
 import com.peterchege.notetakingapp.ui.screens.NavGraphs
+import com.peterchege.notetakingapp.ui.screens.auth.AuthScreenViewModel
+import com.peterchege.notetakingapp.ui.screens.destinations.AllNotesScreenDestination
+import com.peterchege.notetakingapp.ui.screens.destinations.AuthScreenDestination
 import com.peterchege.notetakingapp.ui.theme.NoteTakingAppTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
+import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel by inject<AuthScreenViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            NoteTakingAppTheme {
+            val authUser by viewModel.authUser.collectAsStateWithLifecycle()
+            val theme by viewModel.theme.collectAsStateWithLifecycle()
+            NoteTakingAppTheme(
+                darkTheme = theme == Constants.DARK_MODE
+            ) {
                 // A surface container using the 'background' color from the theme
                 Surface(
+
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    DestinationsNavHost(navGraph = NavGraphs.root)
+                    DestinationsNavHost(
+                        navGraph = NavGraphs.root,
+                        startRoute = if (authUser == null) AuthScreenDestination else AllNotesScreenDestination
+                    )
                 }
             }
         }

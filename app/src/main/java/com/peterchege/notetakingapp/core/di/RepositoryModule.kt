@@ -18,6 +18,7 @@ package com.peterchege.notetakingapp.core.di
 import com.peterchege.notetakingapp.data.AuthRepositoryImpl
 import com.peterchege.notetakingapp.data.NetworkInfoRepositoryImpl
 import com.peterchege.notetakingapp.data.OfflineFirstNoteRepositoryImpl
+import com.peterchege.notetakingapp.data.SettingsRepositoryImpl
 import com.peterchege.notetakingapp.data.local.LocalNoteRepository
 import com.peterchege.notetakingapp.data.local.LocalNoteRepositoryImpl
 import com.peterchege.notetakingapp.data.remote.RemoteNoteRepository
@@ -25,6 +26,7 @@ import com.peterchege.notetakingapp.data.remote.RemoteNoteRepositoryImpl
 import com.peterchege.notetakingapp.domain.repository.AuthRepository
 import com.peterchege.notetakingapp.domain.repository.NetworkInfoRepository
 import com.peterchege.notetakingapp.domain.repository.OfflineFirstNoteRepository
+import com.peterchege.notetakingapp.domain.repository.SettingsRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -55,6 +57,10 @@ val repositoryModule = module {
             remoteNoteRepository = get(),
             dispatcherProvider = get(),
         )
+    }
+    single<SettingsRepository> {
+        SettingsRepositoryImpl(userSettingsRepository = get())
+
     }
 
 }

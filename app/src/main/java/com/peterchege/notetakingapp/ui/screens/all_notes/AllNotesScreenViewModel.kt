@@ -20,9 +20,10 @@ import androidx.lifecycle.viewModelScope
 import com.peterchege.notetakingapp.domain.repository.OfflineFirstNoteRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class AllNotesScreenViewModel(
-    noteRepository: OfflineFirstNoteRepository
+    val noteRepository: OfflineFirstNoteRepository
 ) : ViewModel() {
 
     val notes = noteRepository.getAllNotes()
@@ -31,6 +32,13 @@ class AllNotesScreenViewModel(
             started = SharingStarted.WhileSubscribed(5000L),
             initialValue = emptyList()
         )
+
+
+    fun deleteNote(noteId:String){
+        viewModelScope.launch{
+            noteRepository.deleteNoteById(noteId = noteId)
+        }
+    }
 
 
 }

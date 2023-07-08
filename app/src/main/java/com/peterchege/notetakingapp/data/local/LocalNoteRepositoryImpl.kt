@@ -34,8 +34,8 @@ class LocalNoteRepositoryImpl(
        return db.noteDao.getCachedNoteById(noteId = noteId).map { it?.toExternalModel() }
     }
 
-    override suspend fun deleteLocalNoteById() {
-        return db.noteDao.deleteAllCachedNotes()
+    override suspend fun deleteLocalNoteById(noteId: String) {
+        return db.noteDao.deleteNoteById(noteId = noteId)
     }
 
     override suspend fun addNote(note: Note) {

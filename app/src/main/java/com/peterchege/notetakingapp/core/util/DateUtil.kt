@@ -15,21 +15,24 @@
  */
 package com.peterchege.notetakingapp.core.util
 
-import com.peterchege.notetakingapp.ui.theme.BabyBlue
-import com.peterchege.notetakingapp.ui.theme.LightGreen
-import com.peterchege.notetakingapp.ui.theme.RedOrange
-import com.peterchege.notetakingapp.ui.theme.RedPink
-import com.peterchege.notetakingapp.ui.theme.Violet
+import android.os.Build
+import androidx.annotation.RequiresApi
+import java.time.LocalDate
 
-object Constants {
+@RequiresApi(Build.VERSION_CODES.O)
+fun generateFormatDate(date: LocalDate):String{
+    var dateCount:String;
+    var monthCount:String;
+    if (date.dayOfMonth < 10){
+        dateCount = "0${date.dayOfMonth}"
+    }else{
+        dateCount = date.dayOfMonth.toString()
+    }
+    if (date.monthValue < 10){
+        monthCount ="0${date.monthValue}"
+    }else{
+        monthCount = date.monthValue.toString()
+    }
+    return "${dateCount}/${monthCount}/${date.year}"
 
-    const val DATABASE_NAME = "note_app.db"
-
-    const val LIGHT_MODE = "LIGHT_MODE"
-    const val DARK_MODE = "DARK_MODE"
-
-    const val USER_PREFERENCES = "USER_PREFERENCES"
-
-
-    val noteBackgroundColors = listOf(RedOrange, LightGreen, Violet, BabyBlue, RedPink)
 }

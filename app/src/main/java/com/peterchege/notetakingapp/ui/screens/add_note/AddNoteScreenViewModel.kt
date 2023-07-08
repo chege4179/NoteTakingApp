@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.peterchege.notetakingapp.core.util.DispatcherProvider
 import com.peterchege.notetakingapp.core.util.UiEvent
+import com.peterchege.notetakingapp.core.util.generateFormatDate
 import com.peterchege.notetakingapp.domain.models.Note
 import com.peterchege.notetakingapp.domain.models.User
 import com.peterchege.notetakingapp.domain.repository.AuthRepository
@@ -34,6 +35,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalTime
 import java.util.UUID
 
 
@@ -89,7 +93,7 @@ class AddNoteScreenViewModel(
                 noteContent = _noteState.value.noteContent,
                 noteTitle = _noteState.value.noteTitle,
                 noteCreatedAt = "",
-                noteCreatedOn = "",
+                noteCreatedOn = generateFormatDate(date = LocalDate.now()),
                 noteColor = _noteState.value.noteColor ?: 0,
                 noteAuthorId = authUser.userId,
                 isInSync = true,

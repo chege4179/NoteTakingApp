@@ -26,7 +26,8 @@ val viewModelModule = module {
     viewModel<AuthScreenViewModel> {
         AuthScreenViewModel(
             authRepository = get(),
-            networkRepository = get()
+            networkRepository = get(),
+            settingsRepository = get(),
         )
     }
     viewModel<AllNotesScreenViewModel> {

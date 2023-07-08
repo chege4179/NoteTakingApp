@@ -34,6 +34,10 @@ interface NoteDao {
     @Query("DELETE  FROM notes")
     suspend fun deleteAllCachedNotes()
 
+
+    @Query("DELETE FROM notes WHERE noteId = :noteId")
+    suspend fun deleteNoteById(noteId: String)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCachedNote(noteEntity: NoteEntity)
 

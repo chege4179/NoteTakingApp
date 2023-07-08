@@ -40,4 +40,10 @@ class OfflineFirstNoteRepositoryImpl (
         }
     }
 
+    override suspend fun deleteNoteById(noteId: String) {
+        withContext(dispatcherProvider.io){
+            localNoteRepository.deleteLocalNoteById(noteId = noteId)
+        }
+    }
+
 }

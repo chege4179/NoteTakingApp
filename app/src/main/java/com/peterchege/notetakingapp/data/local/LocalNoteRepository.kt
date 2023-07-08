@@ -26,7 +26,7 @@ interface LocalNoteRepository {
     fun getLocalNoteById(noteId:String):Flow<Note?>
 
 
-    suspend fun deleteLocalNoteById()
+    suspend fun deleteLocalNoteById(noteId:String)
 
     suspend fun addNote(note:Note)
 

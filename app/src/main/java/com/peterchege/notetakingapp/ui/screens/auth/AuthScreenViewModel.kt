@@ -17,10 +17,12 @@ package com.peterchege.notetakingapp.ui.screens.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.peterchege.notetakingapp.core.util.Constants
 import com.peterchege.notetakingapp.core.util.UiEvent
 import com.peterchege.notetakingapp.domain.repository.AuthRepository
 import com.peterchege.notetakingapp.domain.repository.NetworkInfoRepository
 import com.peterchege.notetakingapp.domain.repository.NetworkStatus
+import com.peterchege.notetakingapp.domain.repository.SettingsRepository
 import com.peterchege.notetakingapp.ui.screens.destinations.AllNotesScreenDestination
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,8 +43,16 @@ data class FormState(
 class AuthScreenViewModel(
     val authRepository: AuthRepository,
     val networkRepository: NetworkInfoRepository,
+    val settingsRepository: SettingsRepository,
 
     ) : ViewModel() {
+
+    val theme = settingsRepository.getTheme()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000L),
+            initialValue = Constants.DARK_MODE
+        )
 
     val networkStatus = networkRepository.networkStatus
         .stateIn(
