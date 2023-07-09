@@ -148,7 +148,7 @@ fun AllNotesScreenContent(
                 }
             }else{
                 LazyVerticalGrid(columns = GridCells.Fixed(count = 2)){
-                    items(items = notes) {
+                    items(items = notes, key = { it.noteId }) {
                         NoteCard(
                             note = it,
                             onDeleteClick = {

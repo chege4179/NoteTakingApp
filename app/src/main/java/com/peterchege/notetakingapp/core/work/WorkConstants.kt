@@ -15,8 +15,12 @@
  */
 package com.peterchege.notetakingapp.core.work
 
+import androidx.work.WorkInfo
+
 object WorkConstants {
 
-    const val AddNoteWorkerName = "add_note"
-    const val SyncNotesWorkerName = "sync_notes"
+    const val addNoteWorkerName = "add_note"
+    const val syncNotesWorkerName = "sync_notes"
 }
+
+fun List<WorkInfo>.anyRunning() = any { it.state == WorkInfo.State.RUNNING }

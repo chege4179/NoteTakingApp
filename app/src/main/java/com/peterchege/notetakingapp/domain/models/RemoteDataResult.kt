@@ -13,18 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.core.work.add_note
+package com.peterchege.notetakingapp.domain.models
 
-import android.content.Context
-import androidx.work.CoroutineWorker
-import androidx.work.WorkerParameters
-
-class AddNoteWorker(
-    appContext: Context, workerParameters: WorkerParameters
-):CoroutineWorker(appContext,workerParameters) {
-    override suspend fun doWork(): Result {
-        TODO("Not yet implemented")
-    }
-
+sealed interface RemoteDataResult<out T : Any> {
+    data class Success<out T : Any>(val data: T) : RemoteDataResult<T>
+    data class Error(val message: String) : RemoteDataResult<Nothing>
 
 }

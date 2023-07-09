@@ -16,14 +16,16 @@
 package com.peterchege.notetakingapp.data.remote
 
 import com.peterchege.notetakingapp.domain.models.Note
+import com.peterchege.notetakingapp.domain.models.RemoteDataResult
 import kotlinx.coroutines.flow.Flow
 
 interface RemoteNoteRepository {
 
-    fun getAllRemoteNotes(authorId:String): Flow<List<Note>>
+    suspend fun getAllRemoteNotes(authorId:String):RemoteDataResult<List<Note>>
 
-    suspend fun deleteAllNotes(authorId: String)
+    suspend fun deleteAllNotes(authorId: String): RemoteDataResult<String>
 
+    suspend fun deleteNoteById(noteId:String): RemoteDataResult<String>
 
-    suspend fun deleteNoteById(noteId:String)
+    suspend fun saveNoteRemote(note:Note):RemoteDataResult<Note>
 }

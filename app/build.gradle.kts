@@ -119,7 +119,6 @@ dependencies {
 
     implementation ("com.google.firebase:firebase-crashlytics-ktx:18.3.7")
     implementation ("com.google.firebase:firebase-analytics-ktx:21.3.0")
-    implementation("com.google.firebase:firebase-firestore-ktx:24.6.1")
     implementation("com.google.firebase:firebase-auth-ktx:22.0.0")
 
     //timber
@@ -136,7 +135,8 @@ dependencies {
     implementation ("androidx.work:work-runtime-ktx:2.9.0-alpha01")
 
 
-
+    // app write
+    implementation("io.appwrite:sdk-for-android:2.0.0")
 
 
 }

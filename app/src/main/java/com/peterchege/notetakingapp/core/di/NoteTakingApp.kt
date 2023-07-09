@@ -16,26 +16,38 @@
 package com.peterchege.notetakingapp.core.di
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
+import androidx.work.Configuration
+import androidx.work.WorkManager
+import androidx.work.WorkerFactory
 import com.google.firebase.crashlytics.BuildConfig
 import com.peterchege.notetakingapp.core.crashlytics.CrashlyticsTree
+import com.peterchege.notetakingapp.core.util.Constants
+import com.peterchege.notetakingapp.core.work.WorkConstants
+import com.peterchege.notetakingapp.core.work.sync_notes.SyncNotesWorkerFactory
+import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
+import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin
 import timber.log.Timber
 
-class NoteTakingApp:Application(),KoinComponent{
-
+class NoteTakingApp:Application(), KoinComponent {
     override fun onCreate() {
         super.onCreate()
-
         initTimber()
         startKoin {
             androidLogger()
             androidContext(this@NoteTakingApp)
-            modules(databaseModule + firebaseModule + dispatchersModule + repositoryModule
+            workManagerFactory()
+            modules(dispatchersModule + databaseModule + firebaseModule + repositoryModule
                     + viewModelModule + workModule + datastoreModule)
         }
+        setUpWorkerManagerNotificationChannel()
+
     }
 
 
@@ -50,5 +62,17 @@ class NoteTakingApp:Application(),KoinComponent{
         else -> {
             Timber.plant(CrashlyticsTree())
         }
+    }
+    private fun setUpWorkerManagerNotificationChannel(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val channel = NotificationChannel(
+                Constants.NOTIFICATION_CHANNEL,
+                WorkConstants.syncNotesWorkerName,
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(channel)
+        }
+
     }
 }

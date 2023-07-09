@@ -20,6 +20,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.peterchege.notetakingapp.core.room.entites.NoteEntity
+import com.peterchege.notetakingapp.domain.models.Note
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -43,6 +44,10 @@ interface NoteDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertBulkNotes(notes:List<NoteEntity>)
+
+
+    @Query("SELECT * FROM notes WHERE isInSync =:isInSync")
+    suspend fun getNotesBySyncStatus(isInSync:Boolean):List<Note>
 
 
 

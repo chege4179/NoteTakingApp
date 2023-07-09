@@ -41,4 +41,8 @@ class LocalNoteRepositoryImpl(
     override suspend fun addNote(note: Note) {
         return db.noteDao.insertCachedNote(noteEntity = note.toEntity())
     }
+
+    override suspend fun getNotesBySyncStatus(isInSync: Boolean): List<Note> {
+        return db.noteDao.getNotesBySyncStatus(isInSync = isInSync)
+    }
 }

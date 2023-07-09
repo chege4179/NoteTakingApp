@@ -30,6 +30,11 @@ object Constants {
 
     const val USER_PREFERENCES = "USER_PREFERENCES"
 
+    const val DATABASE_ID = "64aab9c9af59e88bf58b"
+    const val COLLECTION_ID = "64aabcdef0860b34137d"
+
+    const val NOTIFICATION_CHANNEL = "notification_channel"
+
 
     val noteBackgroundColors = listOf(RedOrange, LightGreen, Violet, BabyBlue, RedPink)
 }

@@ -20,6 +20,7 @@ import androidx.lifecycle.viewModelScope
 import com.peterchege.notetakingapp.core.util.DispatcherProvider
 import com.peterchege.notetakingapp.core.util.UiEvent
 import com.peterchege.notetakingapp.core.util.generateFormatDate
+import com.peterchege.notetakingapp.core.work.sync_notes.SyncNotesWorkManager
 import com.peterchege.notetakingapp.domain.models.Note
 import com.peterchege.notetakingapp.domain.models.User
 import com.peterchege.notetakingapp.domain.repository.AuthRepository
@@ -45,6 +46,8 @@ data class NoteFormState(
     val noteTitle: String = "",
     val noteContent: String = "",
     val noteColor: Int? = null,
+    val isNoteTitleHintVisible:Boolean = true,
+    val isNoteContentHintVisible:Boolean = true
 
     )
 
@@ -52,6 +55,7 @@ class AddNoteScreenViewModel(
     val dispatcherProvider: DispatcherProvider,
     val authRepository: AuthRepository,
     val noteRepository: OfflineFirstNoteRepository,
+
 
     ) : ViewModel() {
 
@@ -81,6 +85,12 @@ class AddNoteScreenViewModel(
     fun onChangeNoteColor(noteColor: Int) {
         _noteState.value = _noteState.value.copy(noteColor = noteColor)
     }
+    fun onChangeNoteTitleHintVisiblity(visibility:Boolean){
+        _noteState.value = _noteState.value.copy(isNoteTitleHintVisible = visibility)
+    }
+    fun onChangeNoteContentHintVisiblity(visibility:Boolean){
+        _noteState.value = _noteState.value.copy(isNoteContentHintVisible = visibility)
+    }
 
     fun saveNote(authUser: User?) {
         if (authUser == null) return
@@ -106,7 +116,6 @@ class AddNoteScreenViewModel(
                     noteTitle = "",
                     noteContent = "",
                 )
-                delay(500L)
                 _eventFlow.emit(UiEvent.Navigate(AllNotesScreenDestination))
             }catch (e:Throwable){
                 Timber.tag("Note creation error").d(e)

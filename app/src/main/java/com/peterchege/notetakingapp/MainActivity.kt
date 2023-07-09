@@ -28,6 +28,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.work.Configuration
+import androidx.work.WorkManager
+import androidx.work.WorkerFactory
 import com.peterchege.notetakingapp.core.util.Constants
 import com.peterchege.notetakingapp.domain.repository.SettingsRepository
 import com.peterchege.notetakingapp.ui.screens.NavGraph
@@ -39,9 +42,15 @@ import com.peterchege.notetakingapp.ui.theme.NoteTakingAppTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
 import org.koin.android.ext.android.inject
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), Configuration.Provider {
 
     private val viewModel by inject<AuthScreenViewModel>()
+    private val workerFactory: WorkerFactory by inject()
+
+    override val workManagerConfiguration: Configuration = Configuration.Builder()
+        .setMinimumLoggingLevel(android.util.Log.DEBUG)
+        .setWorkerFactory(workerFactory)
+        .build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

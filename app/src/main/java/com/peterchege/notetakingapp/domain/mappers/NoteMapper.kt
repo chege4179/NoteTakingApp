@@ -50,3 +50,29 @@ fun Note.toEntity():NoteEntity {
         isInSync = isInSync
     )
 }
+
+fun Note.noteToNoteMap(): Map<String, Any> {
+    return mapOf(
+        "noteId" to this.noteId,
+        "noteTitle" to this.noteTitle,
+        "noteContent" to this.noteContent,
+        "noteColor" to this.noteColor,
+        "noteAuthorId" to this.noteAuthorId,
+        "noteCreatedAt" to this.noteCreatedAt,
+        "noteCreatedOn" to this.noteCreatedOn,
+        "isInSync" to this.isInSync
+    )
+}
+
+fun Map<String, Any>.noteMapToNote(): Note {
+    return Note(
+        noteId = this["noteId"] as String,
+        noteTitle = this["noteTitle"] as String,
+        noteContent = this["noteContent"] as String,
+        noteColor = this["noteColor"] as Int,
+        noteAuthorId = this["noteAuthorId"] as String,
+        noteCreatedAt = this["noteCreatedAt"] as String,
+        noteCreatedOn = this["noteCreatedOn"] as String,
+        isInSync = this["isInSync"] as Boolean
+    )
+}

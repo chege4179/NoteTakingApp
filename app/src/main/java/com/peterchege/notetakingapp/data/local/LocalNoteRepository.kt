@@ -30,4 +30,6 @@ interface LocalNoteRepository {
 
     suspend fun addNote(note:Note)
 
+    suspend fun getNotesBySyncStatus(isInSync:Boolean):List<Note>
+
 }

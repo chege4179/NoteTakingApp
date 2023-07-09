@@ -15,23 +15,36 @@
  */
 package com.peterchege.notetakingapp.core.di
 
-import com.peterchege.notetakingapp.core.work.add_note.AddNoteWorkManager
-import com.peterchege.notetakingapp.core.work.add_note.AddNoteWorkManagerImpl
+import androidx.work.WorkerFactory
 import com.peterchege.notetakingapp.core.work.sync_notes.SyncNotesWorkManager
 import com.peterchege.notetakingapp.core.work.sync_notes.SyncNotesWorkManagerImpl
+import com.peterchege.notetakingapp.core.work.sync_notes.SyncNotesWorker
+import com.peterchege.notetakingapp.core.work.sync_notes.SyncNotesWorkerFactory
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.dsl.worker
 import org.koin.dsl.module
 
 
 val workModule = module {
 
-
-    single<AddNoteWorkManager> {
-        AddNoteWorkManagerImpl()
-    }
-
     single<SyncNotesWorkManager> {
-        SyncNotesWorkManagerImpl()
+        SyncNotesWorkManagerImpl(context = androidContext())
+    }
+    factory<WorkerFactory> {
+        SyncNotesWorkerFactory(
+            localNoteRepository = get(),
+            remoteNoteRepository = get(),
+            authRepository = get()
+        )
+    }
+    worker {
+        SyncNotesWorker(
+            localNoteRepository = get(),
+            remoteNoteRepository = get(),
+            authRepository = get(),
+            appContext = androidContext(),
+            workerParameters = get(),
+        )
     }
 
 }

@@ -77,12 +77,15 @@ fun AddNoteScreen(
 
     AddNoteScreenContent(
         noteState = noteState,
-        eventFlow = viewModel.eventFlow ,
+        eventFlow = viewModel.eventFlow,
         navigator = navigator,
         onChangeNoteTitle = { viewModel.onChangeNoteTitle(it) },
         onChangeNoteContent = { viewModel.onChangeNoteContent(it) },
         onChangeNoteColor = { viewModel.onChangeNoteColor(it) },
-        saveNote = { viewModel.saveNote(authUser = authUser) }
+        saveNote = { viewModel.saveNote(authUser = authUser) },
+        onChangeNoteContentHintVisibility = { viewModel.onChangeNoteContentHintVisiblity(it) },
+        onChangeNoteTitleHintVisibility = { viewModel.onChangeNoteTitleHintVisiblity(it) },
+
     )
 
 }
@@ -92,13 +95,15 @@ fun AddNoteScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddNoteScreenContent(
-    noteState:NoteFormState,
-    eventFlow:SharedFlow<UiEvent>,
-    navigator:DestinationsNavigator,
-    onChangeNoteTitle:(String) -> Unit,
-    onChangeNoteContent:(String) -> Unit,
-    onChangeNoteColor:(Int) -> Unit,
-    saveNote:() -> Unit,
+    noteState: NoteFormState,
+    eventFlow: SharedFlow<UiEvent>,
+    navigator: DestinationsNavigator,
+    onChangeNoteTitle: (String) -> Unit,
+    onChangeNoteContent: (String) -> Unit,
+    onChangeNoteColor: (Int) -> Unit,
+    onChangeNoteTitleHintVisibility: (Boolean) -> Unit,
+    onChangeNoteContentHintVisibility: (Boolean) -> Unit,
+    saveNote: () -> Unit,
 ) {
 
     val titleState = noteState.noteTitle
@@ -115,12 +120,13 @@ fun AddNoteScreenContent(
 
     LaunchedEffect(key1 = true) {
         eventFlow.collectLatest { event ->
-            when(event) {
+            when (event) {
                 is UiEvent.ShowSnackbar -> {
                     snackbarHostState.showSnackbar(
                         message = event.message
                     )
                 }
+
                 is UiEvent.Navigate -> {
                     navigator.navigate(event.route)
                 }
@@ -133,7 +139,7 @@ fun AddNoteScreenContent(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                   saveNote()
+                    saveNote()
                 },
             ) {
                 Icon(
@@ -143,7 +149,7 @@ fun AddNoteScreenContent(
             }
         },
 
-    ) {
+        ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -194,11 +200,12 @@ fun AddNoteScreenContent(
                     onChangeNoteTitle(it)
                 },
                 onFocusChange = {
+                    onChangeNoteTitleHintVisibility(!it.isFocused && titleState.isBlank())
 
                 },
-                isHintVisible = true,
+                isHintVisible = noteState.isNoteTitleHintVisible,
                 singleLine = true,
-                textStyle = MaterialTheme.typography.labelMedium
+                textStyle = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(16.dp))
             TransparentHintTextField(
@@ -209,8 +216,11 @@ fun AddNoteScreenContent(
                 },
                 onFocusChange = {
 
+                    onChangeNoteContentHintVisibility(!it.isFocused && contentState.isBlank())
+
+
                 },
-                isHintVisible = true,
+                isHintVisible = noteState.isNoteContentHintVisible,
                 textStyle = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.fillMaxHeight()
             )

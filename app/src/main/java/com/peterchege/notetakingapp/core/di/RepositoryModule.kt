@@ -49,13 +49,18 @@ val repositoryModule = module {
     }
 
     single<RemoteNoteRepository> {
-        RemoteNoteRepositoryImpl()
+        RemoteNoteRepositoryImpl(
+            defaultDispatcherProvider = get(),
+            appWriteDatabase = get(),
+
+        )
     }
     single<OfflineFirstNoteRepository> {
         OfflineFirstNoteRepositoryImpl(
             localNoteRepository = get(),
             remoteNoteRepository = get(),
             dispatcherProvider = get(),
+            syncNotesWorkManager = get(),
         )
     }
     single<SettingsRepository> {

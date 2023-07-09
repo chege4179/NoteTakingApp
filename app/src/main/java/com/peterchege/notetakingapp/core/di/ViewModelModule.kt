@@ -40,6 +40,7 @@ val viewModelModule = module {
             authRepository = get(),
             noteRepository = get(),
             dispatcherProvider = get(),
+
         )
     }
 }
