@@ -17,14 +17,25 @@ package com.peterchege.notetakingapp.ui.screens.all_notes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.peterchege.notetakingapp.core.work.sync_notes.SyncNotesWorkManager
+import com.peterchege.notetakingapp.domain.repository.AuthRepository
 import com.peterchege.notetakingapp.domain.repository.OfflineFirstNoteRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class AllNotesScreenViewModel(
-    val noteRepository: OfflineFirstNoteRepository
+    val noteRepository: OfflineFirstNoteRepository,
+    val syncNotesWorkManager: SyncNotesWorkManager,
+    val authRepository: AuthRepository,
 ) : ViewModel() {
+
+    val isSyncing = syncNotesWorkManager.isSyncing
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000L),
+            initialValue = false
+        )
 
     val notes = noteRepository.getAllNotes()
         .stateIn(
@@ -32,6 +43,17 @@ class AllNotesScreenViewModel(
             started = SharingStarted.WhileSubscribed(5000L),
             initialValue = emptyList()
         )
+    val authUser = authRepository.getAuthUser()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000L),
+            initialValue = null
+        )
+    fun syncNotes(authorId:String){
+        viewModelScope.launch {
+            syncNotesWorkManager.startSyncingNotes(authorId)
+        }
+    }
 
 
     fun deleteNote(noteId:String){

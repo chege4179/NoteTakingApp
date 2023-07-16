@@ -34,7 +34,8 @@ fun NoteEntity.toExternalModel():Note {
         noteAuthorId = noteAuthorId,
         noteCreatedAt = noteCreatedAt,
         noteCreatedOn = noteCreatedOn,
-        isInSync = isInSync
+        isInSync = isInSync,
+        isDeleted = isDeleted,
     )
 }
 
@@ -47,7 +48,8 @@ fun Note.toEntity():NoteEntity {
         noteAuthorId = noteAuthorId,
         noteCreatedAt = noteCreatedAt,
         noteCreatedOn = noteCreatedOn,
-        isInSync = isInSync
+        isInSync = isInSync,
+        isDeleted = isDeleted,
     )
 }
 
@@ -60,7 +62,8 @@ fun Note.noteToNoteMap(): Map<String, Any> {
         "noteAuthorId" to this.noteAuthorId,
         "noteCreatedAt" to this.noteCreatedAt,
         "noteCreatedOn" to this.noteCreatedOn,
-        "isInSync" to this.isInSync
+        "isInSync" to this.isInSync,
+        "isDeleted" to this.isDeleted
     )
 }
 
@@ -73,6 +76,7 @@ fun Map<String, Any>.noteMapToNote(): Note {
         noteAuthorId = this["noteAuthorId"] as String,
         noteCreatedAt = this["noteCreatedAt"] as String,
         noteCreatedOn = this["noteCreatedOn"] as String,
-        isInSync = this["isInSync"] as Boolean
+        isInSync = this["isInSync"] as Boolean,
+        isDeleted = this["isDeleted"] as Boolean,
     )
 }

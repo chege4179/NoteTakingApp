@@ -32,7 +32,9 @@ val viewModelModule = module {
     }
     viewModel<AllNotesScreenViewModel> {
         AllNotesScreenViewModel(
-            noteRepository = get()
+            noteRepository = get(),
+            authRepository = get(),
+            syncNotesWorkManager = get(),
         )
     }
     viewModel {

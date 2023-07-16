@@ -47,7 +47,7 @@ interface NoteDao {
 
 
     @Query("SELECT * FROM notes WHERE isInSync =:isInSync")
-    suspend fun getNotesBySyncStatus(isInSync:Boolean):List<Note>
+    suspend fun getNotesBySyncStatus(isInSync:Boolean):List<NoteEntity>
 
 
 

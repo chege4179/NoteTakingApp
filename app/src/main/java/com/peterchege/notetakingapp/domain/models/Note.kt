@@ -15,6 +15,10 @@
  */
 package com.peterchege.notetakingapp.domain.models
 
+import kotlinx.serialization.Serializable
+
+
+@Serializable
 data class Note (
     val noteId:String,
     val noteTitle:String,
@@ -23,7 +27,7 @@ data class Note (
     val noteAuthorId:String,
     val noteCreatedAt:String,
     val noteCreatedOn:String,
-    val isInSync:Boolean
-
+    val isInSync:Boolean,
+    val isDeleted:Boolean = false,
 
 )

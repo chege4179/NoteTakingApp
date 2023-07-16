@@ -42,35 +42,36 @@ class SyncNotesWorker(
 
     ) : CoroutineWorker(appContext, workerParameters) {
     override suspend fun doWork(): Result {
-        val outOfSyncNotes = localNoteRepository.getNotesBySyncStatus(isInSync = false)
-        if (outOfSyncNotes.isNotEmpty()) {
-            try {
-                startForegroundService(notificationInfo = "Syncing Notes to cloud.....")
-                val authorId =
-                    authRepository.getAuthUser().last()?.userId ?: return Result.failure()
-                println(authorId)
-                remoteNoteRepository.deleteAllNotes(authorId = authorId)
-                println("we here")
-                val localNotes = withContext(Dispatchers.IO) {
-                    localNoteRepository.getLocalNotes().last()
+        return withContext(Dispatchers.IO){
+            val outOfSyncNotes = localNoteRepository.getNotesBySyncStatus(isInSync = false)
+            if (outOfSyncNotes.isNotEmpty()) {
+                try {
+                    startForegroundService(notificationInfo = "Trying to sync your notes to the cloud.....")
+                    val authorId =
+                        authRepository.getAuthUser().last()?.userId ?: return@withContext Result.failure()
+                    println(authorId)
+                    remoteNoteRepository.deleteAllNotes(authorId = authorId)
+                    println("we here")
+                    val localNotes = localNoteRepository.getLocalNotes().first()
+                    println("Local Notes Count: ${localNotes.size}")
+                    println("Fetched local notes")
+                    localNotes.forEach {
+                        remoteNoteRepository.saveNoteRemote(note = it)
+                    }
+                    startForegroundService(notificationInfo = "Sync successful")
+                    return@withContext Result.success()
+                } catch (e: Throwable) {
+                    println("Error occurred In the worker : ${e.localizedMessage ?: e.message}")
+                    startForegroundService(notificationInfo = "Sync failed !!")
+                    return@withContext Result.failure()
                 }
-                println("Local Notes Count: ${localNotes.size}")
-                println("Fetched local notes")
-                localNotes.forEach {
-                    remoteNoteRepository.saveNoteRemote(note = it)
-                }
-                startForegroundService(notificationInfo = "Sync successful")
-                return Result.success()
-            } catch (e: Throwable) {
-                println("Error occurred")
-                startForegroundService(notificationInfo = "Sync failed !!")
-                return Result.failure()
-            }
 
-        } else {
-            startForegroundService(notificationInfo = "No need for sync.....")
-            return Result.success()
+            } else {
+                startForegroundService(notificationInfo = "No need for sync.....")
+                return@withContext Result.success()
+            }
         }
+
 
     }
 

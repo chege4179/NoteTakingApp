@@ -17,23 +17,18 @@ package com.peterchege.notetakingapp.core.di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import io.appwrite.Client
-import io.appwrite.services.Databases
-import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val firebaseModule = module {
     single<FirebaseAuth> {
         Firebase.auth
     }
-    single<Client> {
-        Client(androidContext())
-            .setEndpoint("https://cloud.appwrite.io/v1")
-            .setProject("64aab78ad0529f1807a4")
-            .setSelfSigned(true)
+    single<FirebaseFirestore> {
+        Firebase.firestore
     }
-    single<Databases>{
-        Databases(client = get())
-    }
+
+
 }

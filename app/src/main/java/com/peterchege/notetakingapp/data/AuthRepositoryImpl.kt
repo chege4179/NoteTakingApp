@@ -37,7 +37,7 @@ class AuthRepositoryImpl(
             val user = User(
                 name = currentUser.displayName ?: "",
                 email = currentUser.email ?: "",
-                userId = currentUser.uid ?: ""
+                userId = currentUser.uid
             )
             emit(user)
         }

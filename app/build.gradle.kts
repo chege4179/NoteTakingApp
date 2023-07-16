@@ -5,6 +5,7 @@ plugins {
     id ("com.google.firebase.crashlytics")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp") version "1.8.21-1.0.11"
+
 }
 
 android {
@@ -84,6 +85,7 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation ("androidx.compose.material:material:1.6.0-alpha01")
 
     implementation("androidx.compose.foundation:foundation:1.4.3")
     implementation("androidx.compose.foundation:foundation-layout:1.4.3")
@@ -91,8 +93,8 @@ dependencies {
 
 
     // compose destinations
-    implementation("io.github.raamcosta.compose-destinations:core:1.9.42-beta")
-    ksp("io.github.raamcosta.compose-destinations:ksp:1.9.42-beta")
+    implementation("io.github.raamcosta.compose-destinations:core:1.9.50")
+    ksp("io.github.raamcosta.compose-destinations:ksp:1.9.50")
 
 
     // view model
@@ -102,8 +104,8 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
 
     //coroutines
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2")
 
     // room
     ksp ("androidx.room:room-compiler:2.5.2")
@@ -117,9 +119,10 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
 
-    implementation ("com.google.firebase:firebase-crashlytics-ktx:18.3.7")
+    implementation ("com.google.firebase:firebase-crashlytics-ktx:18.4.0")
     implementation ("com.google.firebase:firebase-analytics-ktx:21.3.0")
-    implementation("com.google.firebase:firebase-auth-ktx:22.0.0")
+    implementation("com.google.firebase:firebase-auth-ktx:22.1.0")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.7.0")
 
     //timber
     implementation("com.jakewharton.timber:timber:5.0.1")
@@ -131,12 +134,16 @@ dependencies {
     implementation ("io.insert-koin:koin-androidx-compose:3.4.3")
     implementation ("io.insert-koin:koin-androidx-workmanager:3.4.2")
 
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
     implementation ("androidx.work:work-runtime-ktx:2.9.0-alpha01")
 
 
-    // app write
-    implementation("io.appwrite:sdk-for-android:2.0.0")
+
+
+
+
+
 
 
 }

@@ -30,4 +30,5 @@ data class NoteEntity (
     val noteCreatedAt:String,
     val noteCreatedOn:String,
     val isInSync:Boolean,
+    val isDeleted:Boolean = false,
 )

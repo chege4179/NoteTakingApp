@@ -51,8 +51,7 @@ val repositoryModule = module {
     single<RemoteNoteRepository> {
         RemoteNoteRepositoryImpl(
             defaultDispatcherProvider = get(),
-            appWriteDatabase = get(),
-
+            fireStore = get(),
         )
     }
     single<OfflineFirstNoteRepository> {

@@ -30,10 +30,15 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.PullRefreshState
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -58,6 +63,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 
+@OptIn(ExperimentalMaterialApi::class)
 @Destination
 @Composable
 fun AllNotesScreen(
@@ -66,23 +72,31 @@ fun AllNotesScreen(
     ) {
     val viewModel = getViewModel<AllNotesScreenViewModel>()
     val notes by viewModel.notes.collectAsStateWithLifecycle()
+    val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
+    val authUser by viewModel.authUser.collectAsStateWithLifecycle()
+    val pullRefreshState = rememberPullRefreshState(isSyncing, {
+        viewModel.syncNotes(authUser?.userId ?:"") })
 
     AllNotesScreenContent(
         notes = notes,
         navigator = navigator,
-        onDeleteNote = { viewModel.deleteNote(it) }
+        onDeleteNote = { viewModel.deleteNote(it) },
+        pullRefreshState = pullRefreshState,
+
     )
 
 
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun AllNotesScreenContent(
     notes: List<Note>,
     navigator: DestinationsNavigator,
     onDeleteNote:(String) -> Unit,
+    pullRefreshState:PullRefreshState,
+
 ) {
     Scaffold(
         modifier = Modifier
@@ -102,65 +116,81 @@ fun AllNotesScreenContent(
             }
         }
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize().padding(10.dp)
+        Box(
+            modifier = Modifier
+                .pullRefresh(pullRefreshState)
+                .fillMaxSize()
         ){
-            Row(
+            PullRefreshIndicator(
+                refreshing = true,
+                state = pullRefreshState,
+                modifier =  Modifier.align(Alignment.TopCenter)
+            )
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                    .fillMaxSize()
+                    .padding(10.dp)
             ){
-                Text(
-                    text = "Notes",
-                    style = MaterialTheme.typography.displaySmall,
-                    color = MaterialTheme.colorScheme.primary,
-                )
+
                 Row(
-                    modifier = Modifier.fillMaxWidth(0.5F),
-                    horizontalArrangement = Arrangement.End,
-                ){
-                    CustomIconButton(
-                        icon = Icons.Default.Settings,
-                        onClick = {
-                            navigator.navigate(SettingsScreenDestination)
-
-                        })
-                    CustomIconButton(
-                        icon = Icons.Default.Search,
-                        onClick = {
-
-                        }
-                    )
-                }
-            }
-            if (notes.isEmpty()){
-                Box(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ){
                     Text(
-                        text = "You have no notes yet",
-                        modifier = Modifier.align(Alignment.Center),
-                        style = TextStyle(color = MaterialTheme.colorScheme.primary),
+                        text = "Notes",
+                        style = MaterialTheme.typography.displaySmall,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(0.5F),
+                        horizontalArrangement = Arrangement.End,
+                    ){
+                        CustomIconButton(
+                            icon = Icons.Default.Settings,
+                            onClick = {
+                                navigator.navigate(SettingsScreenDestination)
 
-                        )
-
-                }
-            }else{
-                LazyVerticalGrid(columns = GridCells.Fixed(count = 2)){
-                    items(items = notes, key = { it.noteId }) {
-                        NoteCard(
-                            note = it,
-                            onDeleteClick = {
-                                onDeleteNote(it.noteId)
+                            })
+                        CustomIconButton(
+                            icon = Icons.Default.Search,
+                            onClick = {
 
                             }
                         )
+                    }
+                }
+                if (notes.isEmpty()){
+                    Box(
+                        modifier = Modifier.fillMaxSize()
+                    ){
+                        Text(
+                            text = "You have no notes yet",
+                            modifier = Modifier.align(Alignment.Center),
+                            style = TextStyle(color = MaterialTheme.colorScheme.primary),
 
+                            )
+
+                    }
+                }else{
+                    LazyVerticalGrid(columns = GridCells.Fixed(count = 2)){
+                        items(items = notes, key = { it.noteId }) {
+                            NoteCard(
+                                modifier = Modifier.padding(5.dp),
+                                note = it,
+                                onDeleteClick = {
+                                    onDeleteNote(it.noteId)
+
+                                }
+                            )
+
+                        }
                     }
                 }
             }
         }
+
 
 
 
