@@ -134,15 +134,24 @@ dependencies {
     implementation ("io.insert-koin:koin-androidx-compose:3.4.3")
     implementation ("io.insert-koin:koin-androidx-workmanager:3.4.2")
 
+
+    testImplementation ("app.cash.turbine:turbine:1.0.0")
+    androidTestImplementation ("app.cash.turbine:turbine:1.0.0")
+
     implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
     implementation ("androidx.work:work-runtime-ktx:2.9.0-alpha01")
 
+    val mockkVersion = "1.13.5"
+    testImplementation("io.mockk:mockk:${mockkVersion}")
+    testImplementation ("io.mockk:mockk-android:${mockkVersion}")
+    testImplementation ("io.mockk:mockk-agent:${mockkVersion}")
 
 
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2")
+    androidTestImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2")
 
-
-
+    testImplementation ("com.google.truth:truth:1.1.5")
 
 
 
