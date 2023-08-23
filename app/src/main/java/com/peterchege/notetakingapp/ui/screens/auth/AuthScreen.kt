@@ -71,7 +71,7 @@ import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.getViewModel
 
 
-@RootNavGraph(start = true)
+
 @Destination
 @Composable
 fun AuthScreen(
@@ -121,25 +121,6 @@ fun AuthScreenContent(
         val snackbarHostState = SnackbarHostState()
         val keyboardController = LocalSoftwareKeyboardController.current
 
-//        LaunchedEffect(key1 = networkStatus) {
-//            when (networkStatus) {
-//                is NetworkStatus.Unknown -> {
-//
-//                }
-//
-//                is NetworkStatus.Connected -> {
-////                    snackbarHostState.showSnackbar(
-////                        message = "Connected"
-////                    )
-//                }
-//
-//                is NetworkStatus.Disconnected -> {
-//                    snackbarHostState.showSnackbar(
-//                        message = "You are offline"
-//                    )
-//                }
-//            }
-//        }
 
         LaunchedEffect(key1 = true) {
             eventFlow.collectLatest { event ->

@@ -63,7 +63,7 @@ val repositoryModule = module {
         )
     }
     single<SettingsRepository> {
-        SettingsRepositoryImpl(userSettingsRepository = get())
+        SettingsRepositoryImpl(defaultSettingsProvider = get())
 
     }
 

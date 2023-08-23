@@ -19,8 +19,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
-import com.peterchege.notetakingapp.core.datastore.repository.UserSettingsRepository
-import com.peterchege.notetakingapp.core.datastore.repository.UserSettingsRepositoryImpl
+import com.peterchege.notetakingapp.core.datastore.repository.DefaultSettingsProvider
+import com.peterchege.notetakingapp.core.datastore.repository.DefaultSettingsProviderImpl
 import com.peterchege.notetakingapp.core.util.Constants
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -35,9 +35,8 @@ val datastoreModule = module {
         )
     }
 
-    single<UserSettingsRepository>{
-        UserSettingsRepositoryImpl(dataStore = get())
-
+    single<DefaultSettingsProvider>{
+        DefaultSettingsProviderImpl(dataStore = get())
     }
 
 

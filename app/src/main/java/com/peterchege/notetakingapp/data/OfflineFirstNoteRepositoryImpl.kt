@@ -23,8 +23,10 @@ import com.peterchege.notetakingapp.domain.models.Note
 import com.peterchege.notetakingapp.domain.models.RemoteDataResult
 import com.peterchege.notetakingapp.domain.repository.OfflineFirstNoteRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -36,22 +38,30 @@ class OfflineFirstNoteRepositoryImpl (
 ):OfflineFirstNoteRepository {
 
     override fun getAllNotes(): Flow<List<Note>> {
-        return localNoteRepository.getLocalNotes().flowOn(dispatcherProvider.io)
+        return localNoteRepository.getLocalNotes()
+            .onStart { emptyList<Note>() }
+            .catch { emptyList<Note>() }
+            .flowOn(dispatcherProvider.io)
     }
 
     override suspend fun addNote(note: Note) {
         withContext(dispatcherProvider.io){
             try {
-                val response = remoteNoteRepository.saveNoteRemote(note = note)
-                when(response){
-                    is RemoteDataResult.Success -> {
-                        localNoteRepository.addNote(note = response.data)
+                if (note.noteAuthorId == ""){
+                    localNoteRepository.addNote(note = note)
+                }else{
+                    val response = remoteNoteRepository.saveNoteRemote(note = note)
+                    when(response){
+                        is RemoteDataResult.Success -> {
+                            localNoteRepository.addNote(note = note)
+                        }
+                        is RemoteDataResult.Error -> {
+                            localNoteRepository.addNote(note = note.copy(isInSync = false))
+                        }
                     }
-                    is RemoteDataResult.Error -> {
-                        localNoteRepository.addNote(note = note.copy(isInSync = false))
-                    }
+                    syncNotesWorkManager.startSyncingNotes("")
                 }
-                syncNotesWorkManager.startSyncingNotes("")
+
             }catch (e:Exception){
                 Timber.e(e)
                 localNoteRepository.addNote(note = note.copy(isInSync = false))

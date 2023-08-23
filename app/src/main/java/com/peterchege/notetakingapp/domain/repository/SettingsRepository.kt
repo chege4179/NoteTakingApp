@@ -21,4 +21,8 @@ interface SettingsRepository {
     suspend fun setTheme(themeValue: String)
 
     fun getTheme(): Flow<String>
+
+    suspend fun setSyncSetting(syncSetting:Boolean)
+
+    fun getSyncSetting():Flow<Boolean>
 }

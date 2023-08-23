@@ -19,4 +19,5 @@ data class User(
     val email:String,
     val name:String,
     val userId:String,
+    val imageUrl:String,
 )

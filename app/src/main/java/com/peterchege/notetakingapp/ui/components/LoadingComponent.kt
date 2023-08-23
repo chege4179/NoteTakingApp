@@ -13,25 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.data.local
+package com.peterchege.notetakingapp.ui.components
 
-import com.peterchege.notetakingapp.domain.models.Note
-import kotlinx.coroutines.flow.Flow
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 
-interface LocalNoteRepository {
-
-    fun getLocalNotes(): Flow<List<Note>>
-
-
-    fun getLocalNoteById(noteId:String):Flow<Note?>
-
-
-    suspend fun deleteLocalNoteById(noteId:String)
-
-    suspend fun addNote(note:Note)
-
-    suspend fun getNotesBySyncStatus(isInSync:Boolean):List<Note>
-
-    suspend fun updateNoteAuthorId(noteAuthorId:String)
-
+@Composable
+fun LoadingComponent() {
+    Box (modifier = Modifier.fillMaxSize()){
+        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+    }
 }

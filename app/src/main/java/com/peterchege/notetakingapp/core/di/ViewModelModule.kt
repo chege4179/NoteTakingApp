@@ -18,6 +18,7 @@ package com.peterchege.notetakingapp.core.di
 import com.peterchege.notetakingapp.ui.screens.add_note.AddNoteScreenViewModel
 import com.peterchege.notetakingapp.ui.screens.all_notes.AllNotesScreenViewModel
 import com.peterchege.notetakingapp.ui.screens.auth.AuthScreenViewModel
+import com.peterchege.notetakingapp.ui.screens.settings.SettingsScreenViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -43,6 +44,11 @@ val viewModelModule = module {
             noteRepository = get(),
             dispatcherProvider = get(),
 
+        )
+    }
+    viewModel {
+        SettingsScreenViewModel(
+            settingsRepository = get(),
         )
     }
 }

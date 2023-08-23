@@ -45,4 +45,8 @@ class LocalNoteRepositoryImpl(
     override suspend fun getNotesBySyncStatus(isInSync: Boolean): List<Note> {
         return db.noteDao.getNotesBySyncStatus(isInSync = isInSync).toExternalListModel()
     }
+
+    override suspend fun updateNoteAuthorId(noteAuthorId: String) {
+        return db.noteDao.updateNotesAuthorId(noteAuthorId = noteAuthorId)
+    }
 }

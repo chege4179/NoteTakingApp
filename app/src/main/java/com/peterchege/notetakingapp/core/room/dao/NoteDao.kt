@@ -50,6 +50,10 @@ interface NoteDao {
     suspend fun getNotesBySyncStatus(isInSync:Boolean):List<NoteEntity>
 
 
+    @Query("UPDATE notes SET noteAuthorId =:noteAuthorId")
+    suspend fun updateNotesAuthorId(noteAuthorId:String)
+
+
 
 
 

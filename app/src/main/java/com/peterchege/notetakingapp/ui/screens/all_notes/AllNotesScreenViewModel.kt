@@ -18,11 +18,28 @@ package com.peterchege.notetakingapp.ui.screens.all_notes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.peterchege.notetakingapp.core.work.sync_notes.SyncNotesWorkManager
+import com.peterchege.notetakingapp.domain.models.Note
+import com.peterchege.notetakingapp.domain.models.User
 import com.peterchege.notetakingapp.domain.repository.AuthRepository
 import com.peterchege.notetakingapp.domain.repository.OfflineFirstNoteRepository
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+
+
+sealed interface AllNotesScreenUiState {
+    object Loading : AllNotesScreenUiState
+
+    data class Success(
+        val notes: List<Note>,
+        val authUser: User?,
+    ) : AllNotesScreenUiState
+
+    data class Error(val message: String) : AllNotesScreenUiState
+}
 
 class AllNotesScreenViewModel(
     val noteRepository: OfflineFirstNoteRepository,
@@ -31,33 +48,37 @@ class AllNotesScreenViewModel(
 ) : ViewModel() {
 
     val isSyncing = syncNotesWorkManager.isSyncing
+        .onStart { emit(false) }
+        .catch { emit(false) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),
             initialValue = false
         )
 
-    val notes = noteRepository.getAllNotes()
+    val uiState = combine(
+        noteRepository.getAllNotes(),
+        authRepository.getAuthUser()
+    ) { notes, authUser ->
+        AllNotesScreenUiState.Success(notes = notes, authUser = authUser)
+    }
+        .onStart { AllNotesScreenUiState.Loading }
+        .catch { AllNotesScreenUiState.Error(message = "An unexpected error occurred") }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),
-            initialValue = emptyList()
+            initialValue = AllNotesScreenUiState.Loading,
         )
-    val authUser = authRepository.getAuthUser()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000L),
-            initialValue = null
-        )
-    fun syncNotes(authorId:String){
+
+    fun syncNotes(authorId: String) {
         viewModelScope.launch {
             syncNotesWorkManager.startSyncingNotes(authorId)
         }
     }
 
 
-    fun deleteNote(noteId:String){
-        viewModelScope.launch{
+    fun deleteNote(noteId: String) {
+        viewModelScope.launch {
             noteRepository.deleteNoteById(noteId = noteId)
         }
     }

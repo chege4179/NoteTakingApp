@@ -56,7 +56,6 @@ class AddNoteScreenViewModel(
     val authRepository: AuthRepository,
     val noteRepository: OfflineFirstNoteRepository,
 
-
     ) : ViewModel() {
 
     val authUser = authRepository.getAuthUser()
@@ -93,11 +92,12 @@ class AddNoteScreenViewModel(
     }
 
     fun saveNote(authUser: User?) {
-        if (authUser == null) return
+
         viewModelScope.launch {
             val noteId = withContext(dispatcherProvider.io) {
                 UUID.randomUUID().toString()
             }
+
             val note = Note(
                 noteId = noteId,
                 noteContent = _noteState.value.noteContent,
@@ -105,7 +105,7 @@ class AddNoteScreenViewModel(
                 noteCreatedAt = "",
                 noteCreatedOn = generateFormatDate(date = LocalDate.now()),
                 noteColor = _noteState.value.noteColor ?: 0,
-                noteAuthorId = authUser.userId,
+                noteAuthorId = authUser?.userId ?: "",
                 isInSync = true,
 
             )

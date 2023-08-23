@@ -85,16 +85,18 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-    implementation ("androidx.compose.material:material:1.6.0-alpha01")
+    implementation ("androidx.compose.material:material:1.6.0-alpha03")
 
-    implementation("androidx.compose.foundation:foundation:1.4.3")
-    implementation("androidx.compose.foundation:foundation-layout:1.4.3")
-    implementation ("androidx.compose.material:material-icons-extended:1.6.0-alpha01")
+    implementation("androidx.compose.foundation:foundation:1.5.0")
+    implementation("androidx.compose.foundation:foundation-layout:1.5.0")
+    implementation ("androidx.compose.material:material-icons-extended:1.6.0-alpha03")
 
+
+    implementation ("io.coil-kt:coil-compose:2.4.0")
 
     // compose destinations
-    implementation("io.github.raamcosta.compose-destinations:core:1.9.50")
-    ksp("io.github.raamcosta.compose-destinations:ksp:1.9.50")
+    implementation("io.github.raamcosta.compose-destinations:core:1.9.52")
+    ksp("io.github.raamcosta.compose-destinations:ksp:1.9.52")
 
 
     // view model
@@ -104,8 +106,8 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
 
     //coroutines
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     // room
     ksp ("androidx.room:room-compiler:2.5.2")
@@ -121,7 +123,7 @@ dependencies {
 
     implementation ("com.google.firebase:firebase-crashlytics-ktx:18.4.0")
     implementation ("com.google.firebase:firebase-analytics-ktx:21.3.0")
-    implementation("com.google.firebase:firebase-auth-ktx:22.1.0")
+    implementation("com.google.firebase:firebase-auth-ktx:22.1.1")
     implementation("com.google.firebase:firebase-firestore-ktx:24.7.0")
 
     //timber
@@ -140,7 +142,7 @@ dependencies {
 
     implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
-    implementation ("androidx.work:work-runtime-ktx:2.9.0-alpha01")
+    implementation ("androidx.work:work-runtime-ktx:2.9.0-alpha02")
 
     val mockkVersion = "1.13.5"
     testImplementation("io.mockk:mockk:${mockkVersion}")
@@ -148,8 +150,8 @@ dependencies {
     testImplementation ("io.mockk:mockk-agent:${mockkVersion}")
 
 
-    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2")
-    androidTestImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    androidTestImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 
     testImplementation ("com.google.truth:truth:1.1.5")
 

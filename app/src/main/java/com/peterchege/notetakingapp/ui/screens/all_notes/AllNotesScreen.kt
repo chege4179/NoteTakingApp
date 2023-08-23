@@ -25,11 +25,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -39,6 +41,7 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -51,37 +54,41 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.SubcomposeAsyncImage
 import com.peterchege.notetakingapp.domain.models.Note
 import com.peterchege.notetakingapp.ui.components.CustomIconButton
+import com.peterchege.notetakingapp.ui.components.ErrorComponent
+import com.peterchege.notetakingapp.ui.components.LoadingComponent
 import com.peterchege.notetakingapp.ui.components.NoteCard
 import com.peterchege.notetakingapp.ui.screens.destinations.AddNoteScreenDestination
 import com.peterchege.notetakingapp.ui.screens.destinations.SettingsScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 
+@RootNavGraph(start = true)
 @OptIn(ExperimentalMaterialApi::class)
 @Destination
 @Composable
 fun AllNotesScreen(
     navigator: DestinationsNavigator,
-
-    ) {
+) {
     val viewModel = getViewModel<AllNotesScreenViewModel>()
-    val notes by viewModel.notes.collectAsStateWithLifecycle()
     val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
-    val authUser by viewModel.authUser.collectAsStateWithLifecycle()
-    val pullRefreshState = rememberPullRefreshState(isSyncing, {
-        viewModel.syncNotes(authUser?.userId ?:"") })
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
 
     AllNotesScreenContent(
-        notes = notes,
+        uiState = uiState,
         navigator = navigator,
-        onDeleteNote = { viewModel.deleteNote(it) },
-        pullRefreshState = pullRefreshState,
+        onDeleteNote = viewModel::deleteNote,
+        isSyncing = isSyncing,
+        syncNotes = viewModel::syncNotes
 
     )
 
@@ -92,11 +99,11 @@ fun AllNotesScreen(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun AllNotesScreenContent(
-    notes: List<Note>,
+    isSyncing: Boolean,
+    syncNotes: (String) -> Unit,
+    uiState: AllNotesScreenUiState,
     navigator: DestinationsNavigator,
-    onDeleteNote:(String) -> Unit,
-    pullRefreshState:PullRefreshState,
-
+    onDeleteNote: (String) -> Unit,
 ) {
     Scaffold(
         modifier = Modifier
@@ -109,91 +116,124 @@ fun AllNotesScreenContent(
                 }
             ) {
                 Icon(
-                    imageVector =  Icons.Filled.Add,
+                    imageVector = Icons.Filled.Add,
                     contentDescription = "Create Post"
                 )
 
             }
         }
     ) {
-        Box(
-            modifier = Modifier
-                .pullRefresh(pullRefreshState)
-                .fillMaxSize()
-        ){
-            PullRefreshIndicator(
-                refreshing = true,
-                state = pullRefreshState,
-                modifier =  Modifier.align(Alignment.TopCenter)
-            )
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(10.dp)
-            ){
+        when (uiState) {
+            is AllNotesScreenUiState.Loading -> {
+                LoadingComponent()
+            }
 
-                Row(
+            is AllNotesScreenUiState.Error -> {
+                ErrorComponent(
+                    message = uiState.message,
+                    retryCallback = { }
+                )
+            }
+
+            is AllNotesScreenUiState.Success -> {
+                val pullRefreshState = rememberPullRefreshState(
+                    refreshing = isSyncing,
+                    onRefresh = {
+                        if (uiState.authUser != null) {
+                            syncNotes(uiState.authUser.userId)
+                        }
+                    })
+                val notes = uiState.notes
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(80.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ){
-                    Text(
-                        text = "Notes",
-                        style = MaterialTheme.typography.displaySmall,
-                        color = MaterialTheme.colorScheme.primary,
+                        .pullRefresh(pullRefreshState)
+                        .fillMaxSize()
+                ) {
+                    PullRefreshIndicator(
+                        refreshing = true,
+                        state = pullRefreshState,
+                        modifier = Modifier.align(Alignment.TopCenter)
                     )
-                    Row(
-                        modifier = Modifier.fillMaxWidth(0.5F),
-                        horizontalArrangement = Arrangement.End,
-                    ){
-                        CustomIconButton(
-                            icon = Icons.Default.Settings,
-                            onClick = {
-                                navigator.navigate(SettingsScreenDestination)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(10.dp)
+                    ) {
 
-                            })
-                        CustomIconButton(
-                            icon = Icons.Default.Search,
-                            onClick = {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(80.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Text(
+                                text = "Notes",
+                                style = MaterialTheme.typography.displaySmall,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(0.5F),
+                                horizontalArrangement = Arrangement.End,
+                            ) {
+                                if(uiState.authUser != null){
+                                    SubcomposeAsyncImage(
+                                        modifier = Modifier
+                                            .width(20.dp)
+                                            .height(20.dp)
+                                            .clip(RoundedCornerShape(20.dp)),
+                                        model = uiState.authUser.imageUrl,
+                                        loading = {
+                                            CircularProgressIndicator()
+                                        },
+                                        contentDescription = "User Profile Photo"
+                                    )
+                                }
+
+                                CustomIconButton(
+                                    icon = Icons.Default.Settings,
+                                    onClick = {
+                                        navigator.navigate(SettingsScreenDestination)
+
+                                    })
+                                CustomIconButton(
+                                    icon = Icons.Default.Search,
+                                    onClick = {
+
+                                    }
+                                )
+                            }
+                        }
+                        if (notes.isEmpty()) {
+                            Box(
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                Text(
+                                    text = "You have no notes yet",
+                                    modifier = Modifier.align(Alignment.Center),
+                                    style = TextStyle(color = MaterialTheme.colorScheme.primary),
+
+                                    )
 
                             }
-                        )
-                    }
-                }
-                if (notes.isEmpty()){
-                    Box(
-                        modifier = Modifier.fillMaxSize()
-                    ){
-                        Text(
-                            text = "You have no notes yet",
-                            modifier = Modifier.align(Alignment.Center),
-                            style = TextStyle(color = MaterialTheme.colorScheme.primary),
+                        } else {
+                            LazyVerticalGrid(columns = GridCells.Fixed(count = 2)) {
+                                items(items = notes, key = { it.noteId }) {
+                                    NoteCard(
+                                        modifier = Modifier.padding(5.dp),
+                                        note = it,
+                                        onDeleteClick = {
+                                            onDeleteNote(it.noteId)
 
-                            )
-
-                    }
-                }else{
-                    LazyVerticalGrid(columns = GridCells.Fixed(count = 2)){
-                        items(items = notes, key = { it.noteId }) {
-                            NoteCard(
-                                modifier = Modifier.padding(5.dp),
-                                note = it,
-                                onDeleteClick = {
-                                    onDeleteNote(it.noteId)
+                                        }
+                                    )
 
                                 }
-                            )
-
+                            }
                         }
                     }
                 }
             }
         }
-
-
-
-
     }
 
 

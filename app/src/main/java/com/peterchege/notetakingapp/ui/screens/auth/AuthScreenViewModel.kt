@@ -68,7 +68,7 @@ class AuthScreenViewModel(
         )
 
 
-    private val _formState = MutableStateFlow<FormState>(FormState())
+    private val _formState = MutableStateFlow(FormState())
     val formState = _formState.asStateFlow()
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
