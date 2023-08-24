@@ -17,6 +17,7 @@ package com.peterchege.notetakingapp.ui.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -71,7 +72,8 @@ fun NoteCardPreview(){
                             noteCreatedOn = "2023-07-08 10:00:00",
                             isInSync = true
                         ),
-                        onDeleteClick = {  }
+                        onDeleteClick = {  },
+                        onNoteClick = {  },
                     )
                 }
 
@@ -83,13 +85,14 @@ fun NoteCardPreview(){
 @Composable
 fun NoteCard(
     note: Note,
+    onNoteClick:(String) -> Unit,
     modifier: Modifier = Modifier,
     cornerRadius: Dp = 10.dp,
     cutCornerSize: Dp = 30.dp,
     onDeleteClick: () -> Unit
 ) {
     Box(
-        modifier = modifier
+        modifier = modifier.clickable { onNoteClick(note.noteId) }
     ) {
         Canvas(modifier = Modifier.matchParentSize()) {
             val clipPath = Path().apply {

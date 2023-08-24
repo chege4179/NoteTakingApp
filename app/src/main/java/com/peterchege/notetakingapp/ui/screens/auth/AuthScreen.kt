@@ -89,11 +89,11 @@ fun AuthScreen(
         networkStatus = networkStatus,
         eventFlow = viewModel.eventFlow,
         formState = formState,
-        onChangeEmail = { viewModel.onChangeEmail(it) },
-        onChangePassword = { viewModel.onChangePassword(it) },
-        signUpUser = { viewModel.signUpUser() },
-        loginUser = { viewModel.loginUser() },
-        onChangePasswordVisibility = { viewModel.onChangePasswordVisibilty() },
+        onChangeEmail = viewModel::onChangeEmail ,
+        onChangePassword =  viewModel::onChangePassword ,
+        signUpUser =viewModel::signUpUser,
+        loginUser = viewModel::loginUser ,
+        onChangePasswordVisibility =  viewModel::onChangePasswordVisibilty ,
     )
 
 

@@ -20,11 +20,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -59,23 +62,33 @@ fun SettingsScreen(
 }
 
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SettingsScreenContent(
     uiState: SettingsScreenUiState,
     onChangeTheme: (String) -> Unit,
     onChangeSyncSetting: (Boolean) -> Unit,
-    navigateToAuthScreen:() -> Unit,
+    navigateToAuthScreen: () -> Unit,
 ) {
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+//        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            TopAppBar(
+                modifier = Modifier.background(MaterialTheme.colorScheme.onBackground),
+                title = {
+                    Text(text = "App Settings")
+                },
+            )
+        },
 
-        ) {
+    ) {
         Column(
             modifier = Modifier
-                .background(color = MaterialTheme.colors.onBackground)
+                .background(color = MaterialTheme.colorScheme.background)
                 .fillMaxSize()
-                .padding(10.dp),
+                .padding(paddingValues = it)
+                .padding(10.dp)
+            ,
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
@@ -87,7 +100,8 @@ fun SettingsScreenContent(
                 is SettingsScreenUiState.Error -> {
                     ErrorComponent(
                         message = uiState.message,
-                        retryCallback = { })
+                        retryCallback = { }
+                    )
                 }
 
                 is SettingsScreenUiState.Success -> {
@@ -108,9 +122,9 @@ fun SettingsScreenContent(
                         title = "Sync Notes To The Cloud",
                         checked = uiState.syncSetting,
                         onCheckedChange = {
-                            if (it){
+                            if (it) {
                                 onChangeSyncSetting(!it)
-                            }else{
+                            } else {
                                 navigateToAuthScreen()
                             }
 

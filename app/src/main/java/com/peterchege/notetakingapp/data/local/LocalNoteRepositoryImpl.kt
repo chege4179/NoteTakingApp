@@ -16,30 +16,50 @@
 package com.peterchege.notetakingapp.data.local
 
 import com.peterchege.notetakingapp.core.room.database.NoteTakingAppDatabase
+import com.peterchege.notetakingapp.core.util.DefaultDispatcherProvider
+import com.peterchege.notetakingapp.core.util.DispatcherProvider
 import com.peterchege.notetakingapp.domain.mappers.toEntity
 import com.peterchege.notetakingapp.domain.mappers.toExternalListModel
 import com.peterchege.notetakingapp.domain.mappers.toExternalModel
 import com.peterchege.notetakingapp.domain.models.Note
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 class LocalNoteRepositoryImpl(
-    val db:NoteTakingAppDatabase
-) :LocalNoteRepository {
+    val db: NoteTakingAppDatabase,
+    val defaultDispatcherProvider: DispatcherProvider,
+) : LocalNoteRepository {
     override fun getLocalNotes(): Flow<List<Note>> {
-        return db.noteDao.getAllCachedNotes().map { it.toExternalListModel() }
+        return db.noteDao.getAllCachedNotes()
+            .map { it.toExternalListModel() }
+            .flowOn(defaultDispatcherProvider.io)
+    }
+
+    override fun searchNotes(query: String): Flow<List<Note>> {
+        return db.noteDao.searchNotes(query = query)
+            .map { it.toExternalListModel() }
+            .flowOn(defaultDispatcherProvider.io)
     }
 
     override fun getLocalNoteById(noteId: String): Flow<Note?> {
-       return db.noteDao.getCachedNoteById(noteId = noteId).map { it?.toExternalModel() }
+        return db.noteDao.getCachedNoteById(noteId = noteId)
+            .map { it?.toExternalModel() }
+            .flowOn(defaultDispatcherProvider.io)
     }
 
     override suspend fun deleteLocalNoteById(noteId: String) {
-        return db.noteDao.deleteNoteById(noteId = noteId)
+        withContext(defaultDispatcherProvider.io) {
+            db.noteDao.deleteNoteById(noteId = noteId)
+        }
+
     }
 
     override suspend fun addNote(note: Note) {
-        return db.noteDao.insertCachedNote(noteEntity = note.toEntity())
+        withContext(defaultDispatcherProvider.io) {
+            db.noteDao.insertCachedNote(noteEntity = note.toEntity())
+        }
     }
 
     override suspend fun getNotesBySyncStatus(isInSync: Boolean): List<Note> {

@@ -32,7 +32,7 @@ import org.koin.dsl.module
 
 val repositoryModule = module {
 
-    single<NetworkInfoRepository>{
+    single<NetworkInfoRepository> {
         NetworkInfoRepositoryImpl(
             context = androidContext(),
             dispatcherProvider = get()
@@ -45,7 +45,10 @@ val repositoryModule = module {
     }
 
     single<LocalNoteRepository> {
-        LocalNoteRepositoryImpl(db = get())
+        LocalNoteRepositoryImpl(
+            db = get(),
+            defaultDispatcherProvider = get()
+        )
     }
 
     single<RemoteNoteRepository> {

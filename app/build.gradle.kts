@@ -40,6 +40,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
@@ -67,7 +68,15 @@ kotlin {
         }
     }
 }
-
+kotlin {
+    sourceSets {
+        all {
+            languageSettings.apply {
+                optIn("androidx.compose.material3.ExperimentalMaterial3Api")
+            }
+        }
+    }
+}
 
 dependencies {
 
@@ -77,7 +86,7 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material3:material3:1.2.0-alpha06")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -85,11 +94,11 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-    implementation ("androidx.compose.material:material:1.6.0-alpha03")
+
 
     implementation("androidx.compose.foundation:foundation:1.5.0")
     implementation("androidx.compose.foundation:foundation-layout:1.5.0")
-    implementation ("androidx.compose.material:material-icons-extended:1.6.0-alpha03")
+    implementation ("androidx.compose.material:material-icons-extended:1.6.0-alpha04")
 
 
     implementation ("io.coil-kt:coil-compose:2.4.0")
@@ -129,6 +138,7 @@ dependencies {
     //timber
     implementation("com.jakewharton.timber:timber:5.0.1")
 
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 
     //koin
     implementation ("io.insert-koin:koin-android:3.4.2")

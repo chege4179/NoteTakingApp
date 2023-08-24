@@ -23,7 +23,8 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun EditNoteScreen(
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    noteId:String,
 ){
 
 }

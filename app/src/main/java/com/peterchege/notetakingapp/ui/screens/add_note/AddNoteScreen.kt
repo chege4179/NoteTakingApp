@@ -215,10 +215,7 @@ fun AddNoteScreenContent(
                     onChangeNoteContent(it)
                 },
                 onFocusChange = {
-
                     onChangeNoteContentHintVisibility(!it.isFocused && contentState.isBlank())
-
-
                 },
                 isHintVisible = noteState.isNoteContentHintVisible,
                 textStyle = MaterialTheme.typography.bodyMedium,

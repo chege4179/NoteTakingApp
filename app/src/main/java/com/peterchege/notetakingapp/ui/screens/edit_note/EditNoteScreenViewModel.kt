@@ -15,5 +15,17 @@
  */
 package com.peterchege.notetakingapp.ui.screens.edit_note
 
-class EditNoteScreenViewModel {
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import com.peterchege.notetakingapp.domain.repository.OfflineFirstNoteRepository
+
+class EditNoteScreenViewModel(
+    val savedStateHandle: SavedStateHandle,
+    val noteRepository: OfflineFirstNoteRepository,
+):  ViewModel() {
+
+
+
+
+
 }

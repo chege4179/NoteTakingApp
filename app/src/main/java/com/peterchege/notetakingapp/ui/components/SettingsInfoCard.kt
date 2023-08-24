@@ -23,10 +23,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Switch
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,14 +54,14 @@ fun SettingsInfoCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(70.dp)
-                .background(color = MaterialTheme.colors.background)
+                .background(color = MaterialTheme.colorScheme.onBackground)
                 .padding(10.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = title,
-                style = TextStyle(color = MaterialTheme.colors.primary),
+                style = TextStyle(color = MaterialTheme.colorScheme.primary),
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )

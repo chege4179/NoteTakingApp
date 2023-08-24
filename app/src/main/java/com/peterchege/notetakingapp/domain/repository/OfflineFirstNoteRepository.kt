@@ -24,6 +24,11 @@ interface OfflineFirstNoteRepository {
     fun getAllNotes(): Flow<List<Note>>
 
 
+    fun getNoteById(noteId: String):Flow<Note?>
+
+    fun searchNotes(query:String):Flow<List<Note>>
+
+
     suspend fun addNote(note:Note)
 
     suspend fun deleteNoteById(noteId:String)

@@ -22,6 +22,8 @@ interface LocalNoteRepository {
 
     fun getLocalNotes(): Flow<List<Note>>
 
+    fun searchNotes(query:String):Flow<List<Note>>
+
 
     fun getLocalNoteById(noteId:String):Flow<Note?>
 

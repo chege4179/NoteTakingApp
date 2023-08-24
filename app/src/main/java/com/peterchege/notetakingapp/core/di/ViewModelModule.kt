@@ -18,6 +18,8 @@ package com.peterchege.notetakingapp.core.di
 import com.peterchege.notetakingapp.ui.screens.add_note.AddNoteScreenViewModel
 import com.peterchege.notetakingapp.ui.screens.all_notes.AllNotesScreenViewModel
 import com.peterchege.notetakingapp.ui.screens.auth.AuthScreenViewModel
+import com.peterchege.notetakingapp.ui.screens.note.NoteScreenViewModel
+import com.peterchege.notetakingapp.ui.screens.search.SearchNoteScreenViewModel
 import com.peterchege.notetakingapp.ui.screens.settings.SettingsScreenViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -49,6 +51,18 @@ val viewModelModule = module {
     viewModel {
         SettingsScreenViewModel(
             settingsRepository = get(),
+        )
+    }
+    viewModel {
+        NoteScreenViewModel(
+            savedStateHandle = get(),
+            noteRepository = get()
+        )
+    }
+    viewModel {
+        SearchNoteScreenViewModel(
+            savedStateHandle = get(),
+            noteRepository = get()
         )
     }
 }

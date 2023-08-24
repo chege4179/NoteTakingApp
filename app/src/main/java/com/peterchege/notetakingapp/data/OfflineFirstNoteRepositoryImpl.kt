@@ -44,6 +44,16 @@ class OfflineFirstNoteRepositoryImpl (
             .flowOn(dispatcherProvider.io)
     }
 
+    override fun getNoteById(noteId: String): Flow<Note?> {
+        return localNoteRepository.getLocalNoteById(noteId = noteId)
+            .catch { emit(null) }
+
+    }
+
+    override fun searchNotes(query: String): Flow<List<Note>> {
+        return localNoteRepository.searchNotes(query = query)
+    }
+
     override suspend fun addNote(note: Note) {
         withContext(dispatcherProvider.io){
             try {

@@ -53,6 +53,9 @@ interface NoteDao {
     @Query("UPDATE notes SET noteAuthorId =:noteAuthorId")
     suspend fun updateNotesAuthorId(noteAuthorId:String)
 
+    @Query("SELECT * FROM notes WHERE LOWER(noteTitle) LIKE '%' || LOWER(:query) || '%' ")
+    fun searchNotes(query:String):Flow<List<NoteEntity>>
+
 
 
 
