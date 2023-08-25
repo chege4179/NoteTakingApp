@@ -20,12 +20,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.peterchege.notetakingapp.domain.models.Note
 import com.peterchege.notetakingapp.domain.repository.OfflineFirstNoteRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.zip
+import kotlinx.coroutines.launch
 
 sealed interface SearchNotesScreenUiState {
     object Idle:SearchNotesScreenUiState
@@ -46,27 +54,50 @@ class SearchNoteScreenViewModel (
 ): ViewModel() {
 
     val query  = savedStateHandle.getStateFlow(key = "query", initialValue = "")
+    private val searchResults = noteRepository.searchNotes(query.value)
+
+    private val _uiState = MutableStateFlow<SearchNotesScreenUiState>(SearchNotesScreenUiState.Idle)
+    val uiState = _uiState.asStateFlow()
 
 
-    val uiState = noteRepository.searchNotes(query.value)
-        .map {
-            if(it.isEmpty()){
-                SearchNotesScreenUiState.NoResultsFound
-            }else{
-                SearchNotesScreenUiState.ResultsFound(it)
-            }
-        }
-        .onStart { SearchNotesScreenUiState.Idle }
-        .catch { SearchNotesScreenUiState.Error(message = "An error occurred") }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000L),
-            initialValue = SearchNotesScreenUiState.Idle
-        )
+//    val uiState = noteRepository.searchNotes(query.value)
+//        .map {
+//            if(it.isEmpty()){
+//                SearchNotesScreenUiState.NoResultsFound
+//            }else{
+//                SearchNotesScreenUiState.ResultsFound(it)
+//            }
+//        }
+//        .onStart { SearchNotesScreenUiState.Idle }
+//        .catch { SearchNotesScreenUiState.Error(message = "An error occurred") }
+//        .stateIn(
+//            scope = viewModelScope,
+//            started = SharingStarted.WhileSubscribed(5000L),
+//            initialValue = SearchNotesScreenUiState.Idle
+//        )
 
 
     fun onChangeQuery(query:String){
         savedStateHandle["query"] = query
+        viewModelScope.launch {
+            try {
+                if (query.isNotBlank()){
+                    _uiState.value = SearchNotesScreenUiState.Searching
+                    noteRepository.searchNotes(query).collectLatest {
+                        if(it.isEmpty()){
+                            _uiState.value = SearchNotesScreenUiState.NoResultsFound
+                        }else{
+                            _uiState.value = SearchNotesScreenUiState.ResultsFound(it)
+                        }
+                    }
+                }else{
+                    _uiState.value = SearchNotesScreenUiState.Idle
+                }
+            }catch (e:Throwable){
+                _uiState.value = SearchNotesScreenUiState.Error(message = "An unexpected error occurred")
+            }
+        }
+
     }
 
 

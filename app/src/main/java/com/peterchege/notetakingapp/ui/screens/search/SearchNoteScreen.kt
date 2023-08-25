@@ -30,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
@@ -40,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.peterchege.notetakingapp.ui.components.LoadingComponent
@@ -79,11 +81,11 @@ fun SearchNotesScreenContent(
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
-    ) {
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues = it)
+                .padding(paddingValues = paddingValues)
                 .padding(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top,
@@ -118,7 +120,8 @@ fun SearchNotesScreenContent(
                     Box(modifier = Modifier.fillMaxSize()) {
                         Text(
                             text = "Type something",
-                            modifier = Modifier.align(Alignment.Center)
+                            modifier = Modifier.align(Alignment.Center),
+                            color = MaterialTheme.colorScheme.primary
                         )
 
                     }
@@ -132,7 +135,8 @@ fun SearchNotesScreenContent(
                     Box(modifier = Modifier.fillMaxSize()) {
                         Text(
                             text = "No results found",
-                            modifier = Modifier.align(Alignment.Center)
+                            modifier = Modifier.align(Alignment.Center),
+                            color = MaterialTheme.colorScheme.primary
                         )
 
                     }
@@ -141,9 +145,9 @@ fun SearchNotesScreenContent(
                     Box(modifier = Modifier.fillMaxSize()) {
                         Text(
                             text = "Error Occurred",
-                            modifier = Modifier.align(Alignment.Center)
+                            modifier = Modifier.align(Alignment.Center),
+                            color = MaterialTheme.colorScheme.primary
                         )
-
                     }
                 }
                 is SearchNotesScreenUiState.ResultsFound -> {

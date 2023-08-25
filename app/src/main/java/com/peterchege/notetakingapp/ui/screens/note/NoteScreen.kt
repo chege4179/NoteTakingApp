@@ -35,6 +35,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.peterchege.notetakingapp.ui.components.CustomIconButton
@@ -87,7 +88,7 @@ fun NoteScreenContent(
             Scaffold(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background),
+                    .background(color = Color(note.noteColor)),
                 topBar = {
                     TopAppBar(
                         title = {
@@ -118,8 +119,17 @@ fun NoteScreenContent(
                         .padding(paddingValues = it)
                         .padding(10.dp)
                 ) {
-                    Text(text = note.noteTitle)
-                    Text(text = note.noteContent)
+                    Text(
+                        modifier = Modifier.padding(vertical = 3.dp),
+                        text = note.noteTitle,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = note.noteContent,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
                 }
 
             }
