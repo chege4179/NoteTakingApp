@@ -27,6 +27,6 @@ interface AuthRepository {
 
    fun signUpUser(email: String, password:String):Flow<AuthResult>
 
-   fun signOutUser(email:String,password: String)
+   fun signOutUser()
 
 }

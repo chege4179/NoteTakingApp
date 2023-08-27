@@ -103,7 +103,6 @@ fun SettingsScreenContent(
                         retryCallback = { }
                     )
                 }
-
                 is SettingsScreenUiState.Success -> {
                     SettingsInfoCard(
                         title = "Dark Theme",
@@ -123,19 +122,14 @@ fun SettingsScreenContent(
                         checked = uiState.syncSetting,
                         onCheckedChange = {
                             if (it) {
-                                onChangeSyncSetting(!it)
-                            } else {
                                 navigateToAuthScreen()
+                            } else {
+                                onChangeSyncSetting(it)
                             }
-
-
                         }
                     )
                 }
             }
-
         }
-
     }
-
 }

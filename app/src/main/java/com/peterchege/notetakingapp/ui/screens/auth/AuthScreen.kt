@@ -16,6 +16,7 @@
 package com.peterchege.notetakingapp.ui.screens.auth
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,6 +35,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -122,10 +124,12 @@ fun AuthScreenContent(
         val keyboardController = LocalSoftwareKeyboardController.current
 
 
+        val context = LocalContext.current
         LaunchedEffect(key1 = true) {
             eventFlow.collectLatest { event ->
                 when (event) {
                     is UiEvent.ShowSnackbar -> {
+                        Toast.makeText(context,event.message,Toast.LENGTH_SHORT).show()
                         snackbarHostState.showSnackbar(
                             message = event.message
                         )
@@ -162,6 +166,8 @@ fun AuthScreenContent(
                         fontSize = 30.sp,
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.primary
                     )
 
                     Spacer(modifier = Modifier.height(15.dp))
@@ -172,7 +178,7 @@ fun AuthScreenContent(
                             onChangeEmail(it)
                             //state.username = it
                         },
-                        label = { Text("Email Address") }
+                        label = { Text(text = "Email Address") }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
@@ -196,30 +202,47 @@ fun AuthScreenContent(
                             )
 
                         },
-                        visualTransformation = if (!formState.isPasswordVisible)
+                        visualTransformation = if (formState.isPasswordVisible)
                             VisualTransformation.None
                         else
                             PasswordVisualTransformation(),
-                        label = { Text("Password") }
+                        label = { Text(text = "Password") }
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),
+                        colors = ButtonColors(
+                            containerColor = MaterialTheme.colorScheme.onBackground,
+                            disabledContainerColor = MaterialTheme.colorScheme.onBackground,
+                            contentColor = MaterialTheme.colorScheme.onBackground,
+                            disabledContentColor = MaterialTheme.colorScheme.onBackground,
+                        ),
                         onClick = {
                             keyboardController?.hide()
                             loginUser()
 
                         }
                     ) {
-                        Text("Login")
+                        Text(
+                            text = "Login",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 19.sp,
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     }
                     Spacer(modifier = Modifier.height(10.dp))
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),
+                        colors = ButtonColors(
+                            containerColor = MaterialTheme.colorScheme.onBackground,
+                            disabledContainerColor = MaterialTheme.colorScheme.onBackground,
+                            contentColor = MaterialTheme.colorScheme.onBackground,
+                            disabledContentColor = MaterialTheme.colorScheme.onBackground,
+                        ),
                         onClick = {
                             keyboardController?.hide()
                             signUpUser()
@@ -227,7 +250,12 @@ fun AuthScreenContent(
                         }
                     )
                     {
-                        Text("Sign Up")
+                        Text(
+                            text = "Sign Up",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 19.sp,
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     }
                     Spacer(modifier = Modifier.height(20.dp))
 

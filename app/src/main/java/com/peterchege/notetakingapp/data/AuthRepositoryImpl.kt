@@ -33,12 +33,17 @@ class AuthRepositoryImpl(
         if (currentUser == null) {
             emit(null)
         } else {
+            val uris =  currentUser.providerData.map {
+
+                it.photoUrl.toString()
+            }
+            val uri = if (uris.isEmpty()) "" else uris[1]
 
             val user = User(
                 name = currentUser.displayName ?: "",
                 email = currentUser.email ?: "",
                 userId = currentUser.uid,
-                imageUrl = currentUser.photoUrl.toString(),
+                imageUrl = uri,
             )
             emit(user)
         }
@@ -69,12 +74,14 @@ class AuthRepositoryImpl(
     override fun signUpUser(email: String, password: String): Flow<AuthResult> = callbackFlow {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
+
                 if (task.isSuccessful) {
                     trySend(
                         AuthResult(
                             msg = "Sign Up Successful", success = true)
                     )
                 } else {
+                    println("Task, ${task.exception?.message}")
                     trySend(
                         AuthResult(
                             msg = task.exception?.message ?: "Authentication failed.",
@@ -88,7 +95,7 @@ class AuthRepositoryImpl(
 
     }
 
-    override fun signOutUser(email: String, password: String) {
+    override fun signOutUser() {
         auth.signOut()
 
     }

@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity(), Configuration.Provider {
                 ) {
                     DestinationsNavHost(
                         navGraph = NavGraphs.root,
-                        startRoute = if (authUser == null) AuthScreenDestination else AllNotesScreenDestination
+                        startRoute = AllNotesScreenDestination
                     )
                 }
             }

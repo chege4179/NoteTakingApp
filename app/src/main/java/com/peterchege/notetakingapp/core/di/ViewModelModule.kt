@@ -15,6 +15,7 @@
  */
 package com.peterchege.notetakingapp.core.di
 
+import com.peterchege.notetakingapp.ui.screens.account.AccountScreenViewModel
 import com.peterchege.notetakingapp.ui.screens.add_note.AddNoteScreenViewModel
 import com.peterchege.notetakingapp.ui.screens.all_notes.AllNotesScreenViewModel
 import com.peterchege.notetakingapp.ui.screens.auth.AuthScreenViewModel
@@ -46,7 +47,7 @@ val viewModelModule = module {
             noteRepository = get(),
             dispatcherProvider = get(),
 
-        )
+            )
     }
     viewModel {
         SettingsScreenViewModel(
@@ -63,6 +64,11 @@ val viewModelModule = module {
         SearchNoteScreenViewModel(
             savedStateHandle = get(),
             noteRepository = get()
+        )
+    }
+    viewModel {
+        AccountScreenViewModel(
+            authRepository = get(),
         )
     }
 }

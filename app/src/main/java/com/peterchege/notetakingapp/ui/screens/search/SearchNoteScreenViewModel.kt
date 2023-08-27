@@ -54,28 +54,9 @@ class SearchNoteScreenViewModel (
 ): ViewModel() {
 
     val query  = savedStateHandle.getStateFlow(key = "query", initialValue = "")
-    private val searchResults = noteRepository.searchNotes(query.value)
 
     private val _uiState = MutableStateFlow<SearchNotesScreenUiState>(SearchNotesScreenUiState.Idle)
     val uiState = _uiState.asStateFlow()
-
-
-//    val uiState = noteRepository.searchNotes(query.value)
-//        .map {
-//            if(it.isEmpty()){
-//                SearchNotesScreenUiState.NoResultsFound
-//            }else{
-//                SearchNotesScreenUiState.ResultsFound(it)
-//            }
-//        }
-//        .onStart { SearchNotesScreenUiState.Idle }
-//        .catch { SearchNotesScreenUiState.Error(message = "An error occurred") }
-//        .stateIn(
-//            scope = viewModelScope,
-//            started = SharingStarted.WhileSubscribed(5000L),
-//            initialValue = SearchNotesScreenUiState.Idle
-//        )
-
 
     fun onChangeQuery(query:String){
         savedStateHandle["query"] = query

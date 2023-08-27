@@ -16,11 +16,14 @@
 package com.peterchege.notetakingapp.ui.screens.all_notes
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,6 +31,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -38,6 +42,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -47,10 +52,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
+import com.peterchege.notetakingapp.core.util.generateAvatarURL
 import com.peterchege.notetakingapp.core.util.pullRefresh.PullRefreshIndicator
 import com.peterchege.notetakingapp.core.util.pullRefresh.pullRefresh
 import com.peterchege.notetakingapp.core.util.pullRefresh.rememberPullRefreshState
@@ -58,6 +68,7 @@ import com.peterchege.notetakingapp.ui.components.CustomIconButton
 import com.peterchege.notetakingapp.ui.components.ErrorComponent
 import com.peterchege.notetakingapp.ui.components.LoadingComponent
 import com.peterchege.notetakingapp.ui.components.NoteCard
+import com.peterchege.notetakingapp.ui.screens.destinations.AccountScreenDestination
 import com.peterchege.notetakingapp.ui.screens.destinations.AddNoteScreenDestination
 import com.peterchege.notetakingapp.ui.screens.destinations.NoteScreenDestination
 import com.peterchege.notetakingapp.ui.screens.destinations.SearchNoteScreenDestination
@@ -89,11 +100,14 @@ fun AllNotesScreen(
         navigateToSearchScreen = {
             navigator.navigate(SearchNoteScreenDestination)
         },
-        navigateToAddNoteScreen ={
+        navigateToAddNoteScreen = {
             navigator.navigate(AddNoteScreenDestination)
         },
-        navigateToSettingsScreen =  {
+        navigateToSettingsScreen = {
             navigator.navigate(SettingsScreenDestination)
+        },
+        navigateToAccountScreen = {
+            navigator.navigate(AccountScreenDestination)
         }
     )
 
@@ -107,12 +121,14 @@ fun AllNotesScreenContent(
     isSyncing: Boolean,
     syncNotes: (String) -> Unit,
     uiState: AllNotesScreenUiState,
-    navigateToSettingsScreen:() -> Unit,
-    navigateToSearchScreen:() -> Unit,
-    navigateToAddNoteScreen:() -> Unit,
+    navigateToSettingsScreen: () -> Unit,
+    navigateToAccountScreen:() -> Unit,
+    navigateToSearchScreen: () -> Unit,
+    navigateToAddNoteScreen: () -> Unit,
     onDeleteNote: (String) -> Unit,
-    onNoteClick:(String) -> Unit,
+    onNoteClick: (String) -> Unit,
 ) {
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -120,7 +136,44 @@ fun AllNotesScreenContent(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "My Notes")
+                    Row(
+                        modifier = Modifier.fillMaxWidth(0.75f),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        if (uiState is AllNotesScreenUiState.Success) {
+                            if (uiState.authUser != null) {
+                                IconButton(
+                                    onClick = {
+                                        navigateToAccountScreen()
+                                    }
+                                ) {
+                                    SubcomposeAsyncImage(
+                                        model = generateAvatarURL(uiState.authUser.name),
+                                        loading = {
+                                            Box(modifier = Modifier.fillMaxSize()) {
+                                                CircularProgressIndicator(
+                                                    modifier = Modifier.align(
+                                                        Alignment.Center
+                                                    )
+                                                )
+                                            }
+                                        },
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .width(36.dp)
+                                            .height(36.dp)
+                                            .clip(CircleShape),
+                                        contentDescription = "Profile Photo URL"
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.width(5.dp))
+                            }
+                        }
+                        Text(text = "My Notes")
+                    }
+
                 },
                 actions = {
                     CustomIconButton(
