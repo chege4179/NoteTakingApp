@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 
 sealed interface NoteScreenUiState {
@@ -59,6 +60,11 @@ class NoteScreenViewModel (
             initialValue = NoteScreenUiState.Loading
         )
 
+    fun deleteNote(){
+        viewModelScope.launch{
+            noteRepository.deleteNoteById(noteId)
+        }
+    }
 
 
 }

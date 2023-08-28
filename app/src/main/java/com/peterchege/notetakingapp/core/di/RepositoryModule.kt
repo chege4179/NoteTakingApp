@@ -40,7 +40,8 @@ val repositoryModule = module {
     }
     single<AuthRepository> {
         AuthRepositoryImpl(
-            auth = get()
+            auth = get(),
+            syncNotesWorkManager = get(),
         )
     }
 

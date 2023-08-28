@@ -33,6 +33,48 @@ class RemoteNoteRepositoryImpl(
     val defaultDispatcherProvider: DispatcherProvider,
 ) : RemoteNoteRepository {
 
+    override suspend fun getRemoteNoteById(noteId: String): RemoteDataResult<Note> {
+        return withContext(defaultDispatcherProvider.io){
+            val collectionRef = fireStore
+                .collection("notes")
+                .whereEqualTo("noteId",noteId)
+                .limit(1)
+
+            val querySnapshot = collectionRef.get().await()
+            val notes = mutableListOf<Note>()
+
+            for (document in querySnapshot.documents) {
+                val data = document.data
+                val noteId = data?.get("noteId") as? String ?: ""
+                val noteTitle = data?.get("noteTitle") as? String ?: ""
+                val noteContent = data?.get("noteContent") as? String ?: ""
+                val noteColor = data?.get("noteColor") as? Int ?: 0
+                val noteAuthorId = data?.get("noteAuthorId") as? String ?: ""
+                val noteCreatedAt = data?.get("noteCreatedAt") as? String ?: ""
+                val noteCreatedOn = data?.get("noteCreatedOn") as? String ?: ""
+                val isInSync = data?.get("isInSync") as? Boolean ?: false
+                val isDeleted = data?.get("isDeleted") as? Boolean ?: false
+                val note = Note(
+                    noteId = noteId,
+                    noteTitle = noteTitle,
+                    noteContent = noteContent,
+                    noteColor = noteColor,
+                    noteAuthorId = noteAuthorId,
+                    noteCreatedAt = noteCreatedAt,
+                    noteCreatedOn = noteCreatedOn,
+                    isInSync = isInSync,
+                    isDeleted = isDeleted,
+                )
+                notes.add(note)
+            }
+            if (notes.isEmpty()){
+                return@withContext RemoteDataResult.Error(message = "Note not found")
+            }else{
+                return@withContext RemoteDataResult.Success(data = notes[0])
+            }
+        }
+    }
+
 
     override suspend fun getAllRemoteNotes(authorId: String): RemoteDataResult<List<Note>> {
         return withContext(defaultDispatcherProvider.io) {
@@ -86,9 +128,11 @@ class RemoteNoteRepositoryImpl(
                 }
                 return RemoteDataResult.Success(data = "All notes deleted successfully")
             }
+
+            else -> {
+                return RemoteDataResult.Error(message = "An unexpected error occurred deleting notes")
+            }
         }
-
-
     }
 
     override suspend fun deleteNoteById(noteId: String): RemoteDataResult<String> =
@@ -124,43 +168,3 @@ class RemoteNoteRepositoryImpl(
         }
     }
 }
-
-
-//            collectionRef.addSnapshotListener { snapshot, error ->
-//                if (error != null) {
-//                    return@addSnapshotListener (
-//                            RemoteDataResult.Error(
-//                                message = error.message ?: "An unexpected error occurred"
-//                            )
-//                            )
-//
-//                }
-//                val snapshotData = snapshot?.documents ?: emptyList()
-//
-//                val allNotes = snapshotData.map {
-//                    val data = it.data
-//                    val noteId = data?.get("noteId") as? String ?: ""
-//                    val noteTitle = data?.get("noteTitle") as? String ?: ""
-//                    val noteContent = data?.get("noteContent") as? String ?: ""
-//                    val noteColor = data?.get("noteColor") as? Int ?: 0
-//                    val noteAuthorId = data?.get("noteAuthorId") as? String ?: ""
-//                    val noteCreatedAt = data?.get("noteCreatedAt") as? String ?: ""
-//                    val noteCreatedOn = data?.get("noteCreatedOn") as? String ?: ""
-//                    val isInSync = data?.get("isInSync") as? Boolean ?: false
-//                    val isDeleted = data?.get("isDeleted") as? Boolean ?: false
-//                    return@map Note(
-//                        noteId = noteId,
-//                        noteTitle = noteTitle,
-//                        noteContent = noteContent,
-//                        noteColor = noteColor,
-//                        noteAuthorId = noteAuthorId,
-//                        noteCreatedAt = noteCreatedAt,
-//                        noteCreatedOn = noteCreatedOn,
-//                        isInSync = isInSync,
-//                        isDeleted = isDeleted,
-//                    )
-//                }
-//
-//                return@addSnapshotListener (RemoteDataResult.Success(data = allNotes))
-
-

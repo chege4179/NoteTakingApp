@@ -69,4 +69,8 @@ class LocalNoteRepositoryImpl(
     override suspend fun updateNoteAuthorId(noteAuthorId: String) {
         return db.noteDao.updateNotesAuthorId(noteAuthorId = noteAuthorId)
     }
+
+    override suspend fun updateNoteSyncStatus(syncStatus: Boolean) {
+        return db.noteDao.updateNoteSyncStatus(syncStatus)
+    }
 }

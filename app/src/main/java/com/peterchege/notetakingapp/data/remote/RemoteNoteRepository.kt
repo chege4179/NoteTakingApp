@@ -20,6 +20,8 @@ import com.peterchege.notetakingapp.domain.models.RemoteDataResult
 
 interface RemoteNoteRepository {
 
+    suspend fun getRemoteNoteById(noteId:String):RemoteDataResult<Note>
+
     suspend fun getAllRemoteNotes(authorId: String): RemoteDataResult<List<Note>>
 
     suspend fun deleteAllNotes(authorId: String): RemoteDataResult<String>

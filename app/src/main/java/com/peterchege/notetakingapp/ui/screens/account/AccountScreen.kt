@@ -50,6 +50,7 @@ import coil.compose.SubcomposeAsyncImage
 import com.peterchege.notetakingapp.core.util.generateAvatarURL
 import com.peterchege.notetakingapp.domain.models.User
 import com.peterchege.notetakingapp.ui.components.CustomIconButton
+import com.peterchege.notetakingapp.ui.screens.destinations.AllNotesScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
@@ -65,7 +66,7 @@ fun AccountScreen(
     AccountScreenContent(
         authUser = authUser,
         logOutUser = viewModel::logOutUser,
-        navigateBack = { navigator.navigateUp() }
+        navigateBack = { navigator.navigate(AllNotesScreenDestination) }
     )
 
 }

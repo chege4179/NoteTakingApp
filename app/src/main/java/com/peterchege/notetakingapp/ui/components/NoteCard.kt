@@ -18,8 +18,10 @@ package com.peterchege.notetakingapp.ui.components
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -29,6 +31,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -74,6 +78,7 @@ fun NoteCardPreview(){
                         ),
                         onDeleteClick = {  },
                         onNoteClick = {  },
+                        isUserLoggedIn = true
                     )
                 }
 
@@ -85,6 +90,7 @@ fun NoteCardPreview(){
 @Composable
 fun NoteCard(
     note: Note,
+    isUserLoggedIn:Boolean,
     onNoteClick:(String) -> Unit,
     modifier: Modifier = Modifier,
     cornerRadius: Dp = 10.dp,
@@ -141,15 +147,30 @@ fun NoteCard(
                 overflow = TextOverflow.Ellipsis
             )
         }
-        IconButton(
-            onClick = onDeleteClick,
-            modifier = Modifier.align(Alignment.BottomEnd)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = "Delete note",
-                tint = MaterialTheme.colorScheme.onBackground
-            )
+        Row(
+            modifier = Modifier.align(Alignment.BottomEnd),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically,
+        ){
+            if (isUserLoggedIn){
+                Icon(
+                    imageVector = if(note.isInSync)
+                        Icons.Outlined.Done else Icons.Default.Refresh,
+                    contentDescription = "In Sync",
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+            }
+
+            IconButton(
+                onClick = onDeleteClick,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete note",
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+            }
         }
+
     }
 }

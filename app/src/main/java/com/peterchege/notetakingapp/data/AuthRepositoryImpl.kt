@@ -16,6 +16,7 @@
 package com.peterchege.notetakingapp.data
 
 import com.google.firebase.auth.FirebaseAuth
+import com.peterchege.notetakingapp.core.work.sync_notes.SyncNotesWorkManager
 import com.peterchege.notetakingapp.domain.models.AuthResult
 import com.peterchege.notetakingapp.domain.models.User
 import com.peterchege.notetakingapp.domain.repository.AuthRepository
@@ -25,9 +26,10 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 
 class AuthRepositoryImpl(
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val syncNotesWorkManager: SyncNotesWorkManager,
 
-) : AuthRepository {
+    ) : AuthRepository {
     override fun getAuthUser(): Flow<User?> = flow {
         val currentUser = auth.currentUser
         if (currentUser == null) {
@@ -56,6 +58,10 @@ class AuthRepositoryImpl(
                     trySend(
                         AuthResult(msg = "Sign In Successful", success = true)
                     )
+                    val currentUser = auth.currentUser
+                    if (currentUser != null){
+                        syncNotesWorkManager.startSyncingNotes(currentUser.uid)
+                    }
                 } else {
                     trySend(
                         AuthResult(

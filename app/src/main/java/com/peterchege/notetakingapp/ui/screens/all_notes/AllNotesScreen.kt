@@ -122,7 +122,7 @@ fun AllNotesScreenContent(
     syncNotes: (String) -> Unit,
     uiState: AllNotesScreenUiState,
     navigateToSettingsScreen: () -> Unit,
-    navigateToAccountScreen:() -> Unit,
+    navigateToAccountScreen: () -> Unit,
     navigateToSearchScreen: () -> Unit,
     navigateToAddNoteScreen: () -> Unit,
     onDeleteNote: (String) -> Unit,
@@ -259,30 +259,26 @@ fun AllNotesScreenContent(
                             LazyColumn(
                                 modifier = Modifier.fillMaxSize(),
                             ) {
-                                items(items = notes, key = { it.noteId }) {
+                                items(items = notes, key = { note -> note.noteId }) { note ->
                                     NoteCard(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(vertical = 5.dp),
-                                        note = it,
+                                        note = note,
                                         onDeleteClick = {
-                                            onDeleteNote(it.noteId)
-
+                                            onDeleteNote(note.noteId)
                                         },
-                                        onNoteClick = {
-                                            onNoteClick(it)
-                                        }
+                                        onNoteClick = { id ->
+                                            onNoteClick(id)
+                                        },
+                                        isUserLoggedIn = uiState.authUser != null
                                     )
-
                                 }
                             }
-
                         }
                     }
                 }
             }
         }
     }
-
-
 }

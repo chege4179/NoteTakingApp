@@ -153,19 +153,20 @@ fun SearchNotesScreenContent(
                 is SearchNotesScreenUiState.ResultsFound -> {
                     val notes = uiState.notes
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
-                        items(items = notes, key = { it.noteId }) {
+                        items(items = notes, key = {note ->  note.noteId }) { note ->
                             NoteCard(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = 5.dp),
 
-                                note = it,
-                                onNoteClick = {
-                                    navigateToNoteScreen(it)
+                                note = note,
+                                onNoteClick = { id ->
+                                    navigateToNoteScreen(id)
                                 },
                                 onDeleteClick = {
 
-                                }
+                                },
+                                isUserLoggedIn = false
                             )
 
                         }

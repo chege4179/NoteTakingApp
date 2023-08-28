@@ -32,4 +32,8 @@ interface OfflineFirstNoteRepository {
     suspend fun addNote(note:Note)
 
     suspend fun deleteNoteById(noteId:String)
+
+    suspend fun syncNote(noteId:String)
+
+    suspend fun updateSyncStatus(syncStatus:Boolean)
 }

@@ -24,6 +24,7 @@ import com.peterchege.notetakingapp.domain.models.RemoteDataResult
 import com.peterchege.notetakingapp.domain.repository.OfflineFirstNoteRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.onStart
@@ -54,6 +55,10 @@ class OfflineFirstNoteRepositoryImpl (
         return localNoteRepository.searchNotes(query = query)
     }
 
+    override suspend fun updateSyncStatus(syncStatus: Boolean) {
+        return localNoteRepository.updateNoteSyncStatus(syncStatus)
+    }
+
     override suspend fun addNote(note: Note) {
         withContext(dispatcherProvider.io){
             try {
@@ -69,7 +74,7 @@ class OfflineFirstNoteRepositoryImpl (
                             localNoteRepository.addNote(note = note.copy(isInSync = false))
                         }
                     }
-                    syncNotesWorkManager.startSyncingNotes("")
+                    syncNotesWorkManager.startSyncingNotes(noteAuthorId = note.noteAuthorId)
                 }
 
             }catch (e:Exception){
@@ -78,6 +83,20 @@ class OfflineFirstNoteRepositoryImpl (
             }
 
 
+        }
+    }
+
+    override suspend fun syncNote(noteId: String) {
+        val note = localNoteRepository.getLocalNoteById(noteId).first() ?: return
+        val result = remoteNoteRepository.getRemoteNoteById(noteId)
+        when(result){
+            is RemoteDataResult.Error -> {
+                // Note not found in the firestore so we update it
+                remoteNoteRepository.saveNoteRemote(note = note)
+            }
+            is RemoteDataResult.Success -> {
+
+            }
         }
     }
 

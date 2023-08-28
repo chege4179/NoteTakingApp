@@ -56,6 +56,10 @@ interface NoteDao {
     @Query("SELECT * FROM notes WHERE LOWER(noteTitle) LIKE '%' || LOWER(:query) || '%' ")
     fun searchNotes(query:String):Flow<List<NoteEntity>>
 
+    @Query("UPDATE notes SET isInSync =:syncStatus")
+    suspend fun updateNoteSyncStatus(syncStatus:Boolean)
+
+
 
 
 

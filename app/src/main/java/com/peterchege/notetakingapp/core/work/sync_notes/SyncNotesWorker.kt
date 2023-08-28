@@ -47,17 +47,17 @@ class SyncNotesWorker(
             if (outOfSyncNotes.isNotEmpty()) {
                 try {
                     startForegroundService(notificationInfo = "Trying to sync your notes to the cloud.....")
-                    val authorId =
-                        authRepository.getAuthUser().last()?.userId ?: return@withContext Result.failure()
-                    println(authorId)
-                    remoteNoteRepository.deleteAllNotes(authorId = authorId)
-                    println("we here")
-                    val localNotes = localNoteRepository.getLocalNotes().first()
-                    println("Local Notes Count: ${localNotes.size}")
-                    println("Fetched local notes")
-                    localNotes.forEach {
-                        remoteNoteRepository.saveNoteRemote(note = it)
+                    val authorId = inputData.getString("noteAuthorId") ?: return@withContext Result.success()
+                    if (authorId == ""){
+                        return@withContext Result.success()
                     }
+                    localNoteRepository.updateNoteAuthorId(noteAuthorId = authorId)
+                    remoteNoteRepository.deleteAllNotes(authorId = authorId)
+                    val localNotes = localNoteRepository.getLocalNotes().first()
+                    localNotes.forEach { note ->
+                        remoteNoteRepository.saveNoteRemote(note = note)
+                    }
+                    localNoteRepository.updateNoteSyncStatus(syncStatus = true)
                     startForegroundService(notificationInfo = "Sync successful")
                     return@withContext Result.success()
                 } catch (e: Throwable) {

@@ -106,7 +106,7 @@ class AddNoteScreenViewModel(
                 noteCreatedOn = generateFormatDate(date = LocalDate.now()),
                 noteColor = _noteState.value.noteColor ?: 0,
                 noteAuthorId = authUser?.userId ?: "",
-                isInSync = true,
+                isInSync = authUser != null,
 
             )
             try {

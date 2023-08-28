@@ -36,4 +36,6 @@ interface LocalNoteRepository {
 
     suspend fun updateNoteAuthorId(noteAuthorId:String)
 
+    suspend fun updateNoteSyncStatus(syncStatus:Boolean)
+
 }
