@@ -154,6 +154,8 @@ dependencies {
 
     implementation ("androidx.work:work-runtime-ktx:2.9.0-alpha02")
 
+    testImplementation ("org.robolectric:robolectric:4.10.3")
+
     val mockkVersion = "1.13.5"
     testImplementation("io.mockk:mockk:${mockkVersion}")
     testImplementation ("io.mockk:mockk-android:${mockkVersion}")
@@ -165,6 +167,7 @@ dependencies {
 
     testImplementation ("com.google.truth:truth:1.1.5")
 
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.0")
 
 
 }

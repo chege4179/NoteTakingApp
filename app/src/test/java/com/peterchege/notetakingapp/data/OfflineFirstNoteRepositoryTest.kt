@@ -24,6 +24,9 @@ import com.peterchege.notetakingapp.data.remote.RemoteNoteRepository
 import com.peterchege.notetakingapp.domain.models.Note
 import com.peterchege.notetakingapp.domain.models.RemoteDataResult
 import com.peterchege.notetakingapp.domain.repository.OfflineFirstNoteRepository
+import com.peterchege.notetakingapp.fake.note1
+import com.peterchege.notetakingapp.fake.note2
+import com.peterchege.notetakingapp.fake.note3
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -38,39 +41,6 @@ import org.junit.Rule
 import org.junit.Test
 
 
-val note1 = Note(
-    noteId = "1",
-    noteTitle = "Grocery List",
-    noteContent = "Milk, eggs, bread, cheese, apples",
-    noteColor = 9,
-    noteAuthorId = "1234567890",
-    noteCreatedAt = "2023-07-21T11:02:15Z",
-    noteCreatedOn = "2023-07-21",
-    isInSync = true,
-    isDeleted = false,
-)
-val note2 = Note(
-    noteId = "2",
-    noteTitle = "To-Do List",
-    noteContent = "Do laundry, clean the house, go to the gym",
-    noteColor = 9,
-    noteAuthorId = "1234567891",
-    noteCreatedAt = "2023-07-20T11:02:15Z",
-    noteCreatedOn = "2023-07-20",
-    isInSync = true,
-    isDeleted = false,
-)
-val note3 = Note(
-    noteId = "3",
-    noteTitle = "Work Notes",
-    noteContent = "Meeting with client at 10am, presentation at 2pm",
-    noteColor = 8,
-    noteAuthorId = "1234567892",
-    noteCreatedAt = "2023-07-19T11:02:15Z",
-    noteCreatedOn = "2023-07-19",
-    isInSync = true,
-    isDeleted = false,
-)
 
 class OfflineFirstNoteRepositoryTest {
 
