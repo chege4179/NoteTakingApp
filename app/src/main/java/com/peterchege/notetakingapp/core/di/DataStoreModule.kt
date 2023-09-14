@@ -22,6 +22,8 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import com.peterchege.notetakingapp.core.datastore.repository.DefaultSettingsProvider
 import com.peterchege.notetakingapp.core.datastore.repository.DefaultSettingsProviderImpl
 import com.peterchege.notetakingapp.core.util.Constants
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -29,8 +31,9 @@ val datastoreModule = module {
 
     single<DataStore<Preferences>> {
         PreferenceDataStoreFactory.create(
+            scope = CoroutineScope(context = Dispatchers.IO),
             produceFile = {
-                androidContext().preferencesDataStoreFile(Constants.USER_PREFERENCES)
+                androidContext().preferencesDataStoreFile(name = Constants.USER_PREFERENCES)
             }
         )
     }

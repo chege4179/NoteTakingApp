@@ -55,13 +55,13 @@ class SearchScreenViewModelTest {
 
     @Test
     fun verify_initial_state_is_loading() = runTest {
-        assert(viewModel.uiState.value is SearchNotesScreenUiState.Idle)
+        assertIs<SearchNotesScreenUiState.Idle>(viewModel.uiState.value)
     }
 
     @Test
     fun verify_state_will_be_idle_given_an_empty_string() = runTest{
         viewModel.onChangeQuery("")
-        assert(viewModel.uiState.value is SearchNotesScreenUiState.Idle)
+        assertIs<SearchNotesScreenUiState.Idle>(viewModel.uiState.value)
     }
 
     @Test

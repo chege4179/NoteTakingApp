@@ -57,7 +57,7 @@ class AllNotesScreenViewModelTest {
     @Test
     fun test_stateFlow_is_collected_correctly() = runTest {
         assertIs<AllNotesScreenUiState.Loading>(viewModel.uiState.value)
-        val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
+        val collectJob = launch(mainDispatcherRule.testDispatcher) {
             viewModel.uiState.collect {}
         }
         assertIs<AllNotesScreenUiState.Success>(viewModel.uiState.value)
@@ -68,7 +68,9 @@ class AllNotesScreenViewModelTest {
     @Test
     fun test_note_will_be_removed_when_deleted() = runTest {
         viewModel.uiState.test {
-            val collectJob = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect {} }
+            val collectJob = launch(mainDispatcherRule.testDispatcher) {
+                viewModel.uiState.collect {}
+            }
             val state = awaitItem()
             assertIs<AllNotesScreenUiState.Success>(state)
             assertEquals(expected = 3, actual = state.notes.size)

@@ -24,10 +24,8 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.peterchege.notetakingapp.core.work.WorkConstants
-import com.peterchege.notetakingapp.core.work.anyRunning
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 
@@ -46,7 +44,7 @@ class SyncNotesWorkManagerImpl(
     override val isSyncing: Flow<Boolean> =
         WorkManager.getInstance(context)
             .getWorkInfosForUniqueWorkFlow(WorkConstants.syncNotesWorkerName)
-            .map(List<WorkInfo>::anyRunning)
+            .map{ workInfos -> workInfos.any { workInfo -> workInfo.state == WorkInfo.State.RUNNING } }
             .conflate()
 
 

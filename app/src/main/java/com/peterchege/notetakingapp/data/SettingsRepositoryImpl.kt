@@ -16,22 +16,25 @@
 package com.peterchege.notetakingapp.data
 
 import com.peterchege.notetakingapp.core.datastore.repository.DefaultSettingsProvider
+import com.peterchege.notetakingapp.domain.models.UserSettings
 import com.peterchege.notetakingapp.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 
-class SettingsRepositoryImpl (
+class SettingsRepositoryImpl(
     val defaultSettingsProvider: DefaultSettingsProvider,
-) :SettingsRepository{
+) : SettingsRepository {
+
+    override val userSettings: Flow<UserSettings> =
+        combine(
+            defaultSettingsProvider.getTheme(),
+            defaultSettingsProvider.getSyncSetting()
+        ) { theme, syncSetting ->
+            UserSettings(theme = theme, syncSetting = syncSetting)
+        }
+
     override suspend fun setTheme(themeValue: String) {
         return defaultSettingsProvider.setTheme(themeValue = themeValue)
-    }
-
-    override fun getTheme(): Flow<String> {
-        return defaultSettingsProvider.getTheme()
-    }
-
-    override fun getSyncSetting(): Flow<Boolean> {
-        return defaultSettingsProvider.getSyncSetting()
     }
 
     override suspend fun setSyncSetting(syncSetting: Boolean) {

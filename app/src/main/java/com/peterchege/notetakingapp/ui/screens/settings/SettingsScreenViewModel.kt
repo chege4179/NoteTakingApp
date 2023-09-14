@@ -21,27 +21,26 @@ import com.peterchege.notetakingapp.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 
 sealed interface SettingsScreenUiState {
-    object Loading:SettingsScreenUiState
+    object Loading : SettingsScreenUiState
 
-    data class Success(val theme:String, val syncSetting:Boolean):SettingsScreenUiState
+    data class Success(val theme: String, val syncSetting: Boolean) : SettingsScreenUiState
 
-    data class Error(val message:String):SettingsScreenUiState
+    data class Error(val message: String) : SettingsScreenUiState
 }
-class SettingsScreenViewModel(
-    val settingsRepository:SettingsRepository,
-):ViewModel() {
 
-    val uiState = combine(
-        settingsRepository.getTheme(),
-        settingsRepository.getSyncSetting()
-    ){ theme,syncSetting ->
-        SettingsScreenUiState.Success(theme = theme,syncSetting = syncSetting)
+class SettingsScreenViewModel(
+    val settingsRepository: SettingsRepository,
+) : ViewModel() {
+
+    val uiState = settingsRepository.userSettings.map {
+        SettingsScreenUiState.Success(theme = it.theme, syncSetting = it.syncSetting)
     }
         .onStart { SettingsScreenUiState.Loading }
         .catch { SettingsScreenUiState.Error(message = "Error loading settings") }
@@ -52,13 +51,13 @@ class SettingsScreenViewModel(
         )
 
 
-    fun setTheme(theme:String){
+    fun setTheme(theme: String) {
         viewModelScope.launch {
             settingsRepository.setTheme(theme)
         }
     }
 
-    fun setSyncSetting(syncSetting: Boolean){
+    fun setSyncSetting(syncSetting: Boolean) {
         viewModelScope.launch {
             settingsRepository.setSyncSetting(syncSetting)
         }

@@ -13,17 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.domain.repository
+package com.peterchege.notetakingapp.fake
 
+import com.peterchege.notetakingapp.core.util.Constants
 import com.peterchege.notetakingapp.domain.models.UserSettings
+import com.peterchege.notetakingapp.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
-interface SettingsRepository {
+class FakeSettingsRepository :SettingsRepository {
 
-    val userSettings:Flow<UserSettings>
-    suspend fun setTheme(themeValue: String)
+    private var fakeSettings = UserSettings(theme = Constants.DARK_MODE,syncSetting = false)
+    override val userSettings: Flow<UserSettings> = flowOf(fakeSettings)
 
-    suspend fun setSyncSetting(syncSetting:Boolean)
+    override suspend fun setSyncSetting(syncSetting: Boolean) {
+        fakeSettings = fakeSettings.copy(syncSetting = syncSetting)
+    }
 
-
+    override suspend fun setTheme(themeValue: String) {
+        fakeSettings = fakeSettings.copy(theme = themeValue)
+    }
 }

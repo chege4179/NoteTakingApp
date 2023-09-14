@@ -13,17 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.domain.repository
+package com.peterchege.notetakingapp.domain.models
 
-import com.peterchege.notetakingapp.domain.models.UserSettings
-import kotlinx.coroutines.flow.Flow
-
-interface SettingsRepository {
-
-    val userSettings:Flow<UserSettings>
-    suspend fun setTheme(themeValue: String)
-
-    suspend fun setSyncSetting(syncSetting:Boolean)
-
-
-}
+data class UserSettings(
+    val theme:String,
+    val syncSetting: Boolean
+)

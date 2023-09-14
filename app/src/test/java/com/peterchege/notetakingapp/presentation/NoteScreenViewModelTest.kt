@@ -54,7 +54,7 @@ class NoteScreenViewModelTest {
             }
         )
         assertIs<NoteScreenUiState.Loading>(viewModel.uiState.value)
-        val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
+        val collectJob = launch(mainDispatcherRule.testDispatcher) {
             viewModel.uiState.collect {}
         }
         assertIs<NoteScreenUiState.Success>(viewModel.uiState.value)
@@ -70,7 +70,7 @@ class NoteScreenViewModelTest {
             }
         )
         assertIs<NoteScreenUiState.Loading>(viewModel.uiState.value)
-        val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
+        val collectJob = launch(mainDispatcherRule.testDispatcher) {
             viewModel.uiState.collect {}
         }
         assertIs<NoteScreenUiState.Error>(viewModel.uiState.value)

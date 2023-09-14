@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.domain.repository
+package com.peterchege.notetakingapp
 
-import com.peterchege.notetakingapp.domain.models.UserSettings
-import kotlinx.coroutines.flow.Flow
+import com.peterchege.notetakingapp.core.util.DispatcherProvider
+import kotlinx.coroutines.CoroutineDispatcher
 
-interface SettingsRepository {
+class TestDispatchProvider : DispatcherProvider {
 
-    val userSettings:Flow<UserSettings>
-    suspend fun setTheme(themeValue: String)
+    override val default: CoroutineDispatcher
+        get() = MainDispatcherRule().testDispatcher
 
-    suspend fun setSyncSetting(syncSetting:Boolean)
-
-
+    override val main: CoroutineDispatcher
+        get() = MainDispatcherRule().testDispatcher
+    override val io: CoroutineDispatcher
+        get() = MainDispatcherRule().testDispatcher
 }

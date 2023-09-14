@@ -19,6 +19,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import app.cash.turbine.test
+import com.peterchege.notetakingapp.TestDispatchProvider
 import com.peterchege.notetakingapp.core.room.database.NoteTakingAppDatabase
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -38,7 +39,10 @@ class LocalNoteRepositoryTest  {
         db = Room
             .inMemoryDatabaseBuilder(context,NoteTakingAppDatabase::class.java)
             .build()
-        localNoteRepository = LocalNoteRepositoryImpl(db)
+        localNoteRepository = LocalNoteRepositoryImpl(
+            db = db,
+            defaultDispatcherProvider = TestDispatchProvider()
+        )
     }
 
     @After
