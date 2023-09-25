@@ -15,156 +15,35 @@
  */
 package com.peterchege.notetakingapp.data.remote
 
-import com.google.firebase.firestore.FirebaseFirestore
+import com.peterchege.notetakingapp.core.api.NetworkResult
+import com.peterchege.notetakingapp.core.api.NoteService
+import com.peterchege.notetakingapp.core.api.requests.NoteBody
+import com.peterchege.notetakingapp.core.api.requests.UpdateNoteBody
+import com.peterchege.notetakingapp.core.api.responses.AddNoteResponse
+import com.peterchege.notetakingapp.core.api.responses.DeleteNoteByIdResponse
+import com.peterchege.notetakingapp.core.api.responses.GetNotesByUserIdResponse
+import com.peterchege.notetakingapp.core.api.responses.UpdateNoteByIdResponse
 import com.peterchege.notetakingapp.core.util.DispatcherProvider
-import com.peterchege.notetakingapp.domain.mappers.noteToNoteMap
-import com.peterchege.notetakingapp.domain.models.Note
-import com.peterchege.notetakingapp.domain.models.RemoteDataResult
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 class RemoteNoteRepositoryImpl(
-    val fireStore: FirebaseFirestore,
+    private val noteService: NoteService,
     val defaultDispatcherProvider: DispatcherProvider,
 ) : RemoteNoteRepository {
 
-    override suspend fun getRemoteNoteById(noteId: String): RemoteDataResult<Note> {
-        return withContext(defaultDispatcherProvider.io){
-            val collectionRef = fireStore
-                .collection("notes")
-                .whereEqualTo("noteId",noteId)
-                .limit(1)
-
-            val querySnapshot = collectionRef.get().await()
-            val notes = mutableListOf<Note>()
-
-            for (document in querySnapshot.documents) {
-                val data = document.data
-                val noteId = data?.get("noteId") as? String ?: ""
-                val noteTitle = data?.get("noteTitle") as? String ?: ""
-                val noteContent = data?.get("noteContent") as? String ?: ""
-                val noteColor = data?.get("noteColor") as? Int ?: 0
-                val noteAuthorId = data?.get("noteAuthorId") as? String ?: ""
-                val noteCreatedAt = data?.get("noteCreatedAt") as? String ?: ""
-                val noteCreatedOn = data?.get("noteCreatedOn") as? String ?: ""
-                val isInSync = data?.get("isInSync") as? Boolean ?: false
-                val isDeleted = data?.get("isDeleted") as? Boolean ?: false
-                val note = Note(
-                    noteId = noteId,
-                    noteTitle = noteTitle,
-                    noteContent = noteContent,
-                    noteColor = noteColor,
-                    noteAuthorId = noteAuthorId,
-                    noteCreatedAt = noteCreatedAt,
-                    noteCreatedOn = noteCreatedOn,
-                    isInSync = isInSync,
-                    isDeleted = isDeleted,
-                )
-                notes.add(note)
-            }
-            if (notes.isEmpty()){
-                return@withContext RemoteDataResult.Error(message = "Note not found")
-            }else{
-                return@withContext RemoteDataResult.Success(data = notes[0])
-            }
-        }
-    }
-
-
-    override suspend fun getAllRemoteNotes(authorId: String): RemoteDataResult<List<Note>> {
-        return withContext(defaultDispatcherProvider.io) {
-            val collectionRef = fireStore
-                .collection("notes")
-                .whereEqualTo("noteAuthorId", authorId)
-
-            val querySnapshot = collectionRef.get().await()
-            val notes = mutableListOf<Note>()
-
-            for (document in querySnapshot.documents) {
-                val data = document.data
-                val noteId = data?.get("noteId") as? String ?: ""
-                val noteTitle = data?.get("noteTitle") as? String ?: ""
-                val noteContent = data?.get("noteContent") as? String ?: ""
-                val noteColor = data?.get("noteColor") as? Int ?: 0
-                val noteAuthorId = data?.get("noteAuthorId") as? String ?: ""
-                val noteCreatedAt = data?.get("noteCreatedAt") as? String ?: ""
-                val noteCreatedOn = data?.get("noteCreatedOn") as? String ?: ""
-                val isInSync = data?.get("isInSync") as? Boolean ?: false
-                val isDeleted = data?.get("isDeleted") as? Boolean ?: false
-                val note = Note(
-                    noteId = noteId,
-                    noteTitle = noteTitle,
-                    noteContent = noteContent,
-                    noteColor = noteColor,
-                    noteAuthorId = noteAuthorId,
-                    noteCreatedAt = noteCreatedAt,
-                    noteCreatedOn = noteCreatedOn,
-                    isInSync = isInSync,
-                    isDeleted = isDeleted,
-                )
-                notes.add(note)
-            }
-            return@withContext RemoteDataResult.Success(data = notes)
-
-        }
+    override suspend fun getAllRemoteNotes(authorId: String): NetworkResult<GetNotesByUserIdResponse> {
+        return noteService.getNotesByUserId(authorId)
 
     }
 
-    override suspend fun deleteAllNotes(authorId: String): RemoteDataResult<String> {
-        val response = getAllRemoteNotes(authorId = authorId)
-        when (response) {
-            is RemoteDataResult.Error -> {
-                return RemoteDataResult.Error(message = "An unexpected error occurred deleting notes")
-            }
-
-            is RemoteDataResult.Success -> {
-                response.data.forEach {
-                    deleteNoteById(noteId = it.noteId)
-                }
-                return RemoteDataResult.Success(data = "All notes deleted successfully")
-            }
-
-            else -> {
-                return RemoteDataResult.Error(message = "An unexpected error occurred deleting notes")
-            }
-        }
+    override suspend fun deleteNoteById(noteId: String): NetworkResult<DeleteNoteByIdResponse> {
+        return noteService.deleteNoteById(noteId)
     }
 
-    override suspend fun deleteNoteById(noteId: String): RemoteDataResult<String> =
-        withContext(defaultDispatcherProvider.io) {
-            try {
-                val docRef = fireStore.collection("notes").document(noteId)
-                docRef.update("isDeleted", true).await()
-                return@withContext RemoteDataResult.Success(data = "Note Deleted successfully")
-            } catch (e: Exception) {
-                Timber.e(e)
-                return@withContext RemoteDataResult.Error(message = "An unexpected error occurred")
-            }
+    override suspend fun saveNoteRemote(noteBody: NoteBody): NetworkResult<AddNoteResponse> {
+        return noteService.addNote(noteBody)
+    }
 
-        }
-
-
-    override suspend fun saveNoteRemote(note: Note): RemoteDataResult<Note> {
-        return withContext(defaultDispatcherProvider.io) {
-            try {
-                val docRef = fireStore.collection("notes").document()
-                docRef.set(note.noteToNoteMap()).await()
-                return@withContext RemoteDataResult.Success(data = note)
-
-
-            } catch (e: Exception) {
-                Timber.e("Supabase Error", "Error: " + e.message)
-                return@withContext RemoteDataResult.Error(
-                    message = e.message
-                        ?: "An error occurred saving notes"
-
-                )
-            }
-        }
+    override suspend fun updateNoteById(updateNote: UpdateNoteBody): NetworkResult<UpdateNoteByIdResponse> {
+        return noteService.updateNote(updateNote)
     }
 }

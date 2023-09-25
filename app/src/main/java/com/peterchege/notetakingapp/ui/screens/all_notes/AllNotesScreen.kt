@@ -149,7 +149,7 @@ fun AllNotesScreenContent(
                                     }
                                 ) {
                                     SubcomposeAsyncImage(
-                                        model = generateAvatarURL(uiState.authUser.name),
+                                        model = uiState.authUser.imageUrl,
                                         loading = {
                                             Box(modifier = Modifier.fillMaxSize()) {
                                                 CircularProgressIndicator(

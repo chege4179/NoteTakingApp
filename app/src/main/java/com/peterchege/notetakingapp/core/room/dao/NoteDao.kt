@@ -20,7 +20,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.peterchege.notetakingapp.core.room.entites.NoteEntity
-import com.peterchege.notetakingapp.domain.models.Note
 import kotlinx.coroutines.flow.Flow
 
 @Dao

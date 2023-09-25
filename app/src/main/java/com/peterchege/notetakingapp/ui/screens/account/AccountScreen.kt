@@ -27,8 +27,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
@@ -47,9 +45,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
+import com.peterchege.notetakingapp.core.api.responses.User
 import com.peterchege.notetakingapp.core.util.generateAvatarURL
-import com.peterchege.notetakingapp.domain.models.User
-import com.peterchege.notetakingapp.ui.components.CustomIconButton
 import com.peterchege.notetakingapp.ui.screens.destinations.AllNotesScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -107,7 +104,7 @@ fun AccountScreenContent(
         ) {
             authUser?.let { user ->
                 SubcomposeAsyncImage(
-                    model = generateAvatarURL(user.name),
+                    model = user.imageUrl,
                     loading = {
                         Box(modifier = Modifier.fillMaxSize()) {
                             CircularProgressIndicator(
@@ -125,7 +122,7 @@ fun AccountScreenContent(
                     contentDescription = "Profile Photo URL"
                 )
                 Text(
-                    text = user.name,
+                    text = user.fullName,
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.primary
                 )

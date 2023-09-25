@@ -13,28 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.domain.repository
+package com.peterchege.notetakingapp.core.api.requests
 
-import com.peterchege.notetakingapp.core.api.requests.NoteBody
-import com.peterchege.notetakingapp.core.api.responses.Note
-import kotlinx.coroutines.flow.Flow
+import kotlinx.serialization.Serializable
 
-interface OfflineFirstNoteRepository {
-
-
-    fun getAllNotes(): Flow<List<Note>>
-
-
-    fun getNoteById(noteId: String):Flow<Note?>
-
-    fun searchNotes(query:String):Flow<List<Note>>
-
-
-    suspend fun addNote(noteBody: NoteBody)
-
-    suspend fun deleteNoteById(noteId:String)
-
-
-
-    suspend fun updateSyncStatus(syncStatus:Boolean)
-}
+@Serializable
+data class LoginBody(
+    val email:String,
+    val password:String,
+)

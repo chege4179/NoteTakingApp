@@ -28,7 +28,7 @@ class AccountScreenViewModel (
 ): ViewModel() {
 
 
-    val authUser = authRepository.getAuthUser()
+    val authUser = authRepository.authUser
         .stateIn(
             scope = viewModelScope,
             started=  SharingStarted.WhileSubscribed(5000L),
@@ -37,7 +37,10 @@ class AccountScreenViewModel (
 
 
     fun logOutUser(){
-        authRepository.signOutUser()
+        viewModelScope.launch {
+            authRepository.signOutUser()
+        }
+
     }
 
 

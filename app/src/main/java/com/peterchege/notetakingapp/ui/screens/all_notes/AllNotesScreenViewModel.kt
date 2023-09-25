@@ -17,9 +17,9 @@ package com.peterchege.notetakingapp.ui.screens.all_notes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.peterchege.notetakingapp.core.api.responses.Note
+import com.peterchege.notetakingapp.core.api.responses.User
 import com.peterchege.notetakingapp.core.work.sync_notes.SyncNotesWorkManager
-import com.peterchege.notetakingapp.domain.models.Note
-import com.peterchege.notetakingapp.domain.models.User
 import com.peterchege.notetakingapp.domain.repository.AuthRepository
 import com.peterchege.notetakingapp.domain.repository.OfflineFirstNoteRepository
 import kotlinx.coroutines.flow.SharingStarted
@@ -58,7 +58,7 @@ class AllNotesScreenViewModel(
 
     val uiState = combine(
         noteRepository.getAllNotes(),
-        authRepository.getAuthUser()
+        authRepository.authUser
     ) { notes, authUser ->
         AllNotesScreenUiState.Success(notes = notes, authUser = authUser)
     }

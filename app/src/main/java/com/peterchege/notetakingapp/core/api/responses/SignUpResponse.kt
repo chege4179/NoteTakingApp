@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.domain.models
+package com.peterchege.notetakingapp.core.api.responses
 
-data class AuthResult(
-    val msg:String = "",
-    val success:Boolean = false
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class SignUpResponse(
+    val msg:String,
+    val success:Boolean,
+    val user:User?
 )

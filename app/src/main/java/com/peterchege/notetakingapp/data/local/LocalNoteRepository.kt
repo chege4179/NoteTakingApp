@@ -15,7 +15,7 @@
  */
 package com.peterchege.notetakingapp.data.local
 
-import com.peterchege.notetakingapp.domain.models.Note
+import com.peterchege.notetakingapp.core.api.responses.Note
 import kotlinx.coroutines.flow.Flow
 
 interface LocalNoteRepository {

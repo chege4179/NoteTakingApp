@@ -22,6 +22,7 @@ import com.peterchege.notetakingapp.ui.theme.RedPink
 import com.peterchege.notetakingapp.ui.theme.Violet
 
 object Constants {
+    const val BASE_URL = "https://note-app-server-q4lr.onrender.com"
 
     const val DATABASE_NAME = "note_app.db"
 

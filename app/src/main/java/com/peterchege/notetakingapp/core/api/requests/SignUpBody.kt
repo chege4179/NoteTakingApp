@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.domain.models
+package com.peterchege.notetakingapp.core.api.requests
 
-data class User(
+data class SignUpBody(
     val email:String,
-    val name:String,
-    val userId:String,
-    val imageUrl:String,
+    val password:String,
+    val fullName:String
 )

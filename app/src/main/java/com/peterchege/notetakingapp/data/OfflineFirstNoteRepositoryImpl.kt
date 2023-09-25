@@ -15,28 +15,31 @@
  */
 package com.peterchege.notetakingapp.data
 
+import com.peterchege.notetakingapp.core.api.NetworkResult
+import com.peterchege.notetakingapp.core.api.requests.NoteBody
+import com.peterchege.notetakingapp.core.api.responses.Note
 import com.peterchege.notetakingapp.core.util.DispatcherProvider
 import com.peterchege.notetakingapp.core.work.sync_notes.SyncNotesWorkManager
 import com.peterchege.notetakingapp.data.local.LocalNoteRepository
 import com.peterchege.notetakingapp.data.remote.RemoteNoteRepository
-import com.peterchege.notetakingapp.domain.models.Note
-import com.peterchege.notetakingapp.domain.models.RemoteDataResult
 import com.peterchege.notetakingapp.domain.repository.OfflineFirstNoteRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.UUID
 
-class OfflineFirstNoteRepositoryImpl (
+class OfflineFirstNoteRepositoryImpl(
     val localNoteRepository: LocalNoteRepository,
     val remoteNoteRepository: RemoteNoteRepository,
     val dispatcherProvider: DispatcherProvider,
     val syncNotesWorkManager: SyncNotesWorkManager,
-):OfflineFirstNoteRepository {
+) : OfflineFirstNoteRepository {
 
     override fun getAllNotes(): Flow<List<Note>> {
         return localNoteRepository.getLocalNotes()
@@ -59,49 +62,50 @@ class OfflineFirstNoteRepositoryImpl (
         return localNoteRepository.updateNoteSyncStatus(syncStatus)
     }
 
-    override suspend fun addNote(note: Note) {
-        withContext(dispatcherProvider.io){
+    override suspend fun addNote(noteBody: NoteBody) {
+        withContext(dispatcherProvider.io) {
             try {
-                if (note.noteAuthorId == ""){
+                val timestamp = Instant.now()
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+                val createdAt = timestamp.atZone(ZoneId.of("UTC+3")).format(formatter)
+                val note = Note(
+                    noteTitle = noteBody.noteTitle,
+                    noteAuthorId = noteBody.noteAuthorId,
+                    noteColor = noteBody.noteColor,
+                    noteContent = noteBody.noteContent,
+                    noteId = UUID.randomUUID().toString(),
+                    createdAt = createdAt,
+                    updatedAt = createdAt,
+                )
+                if (noteBody.noteAuthorId == "") {
+
                     localNoteRepository.addNote(note = note)
-                }else{
-                    val response = remoteNoteRepository.saveNoteRemote(note = note)
-                    when(response){
-                        is RemoteDataResult.Success -> {
+                } else {
+                    val response = remoteNoteRepository.saveNoteRemote(noteBody = noteBody)
+                    when (response) {
+                        is NetworkResult.Success -> {
+                            if (response.data.success && response.data.note != null) {
+                                localNoteRepository.addNote(note = response.data.note)
+                            } else {
+                                localNoteRepository.addNote(note = note)
+                            }
+                        }
+                        is NetworkResult.Error -> {
                             localNoteRepository.addNote(note = note)
                         }
-                        is RemoteDataResult.Error -> {
-                            localNoteRepository.addNote(note = note.copy(isInSync = false))
-                        }
+                        else -> {  }
                     }
                     syncNotesWorkManager.startSyncingNotes(noteAuthorId = note.noteAuthorId)
                 }
 
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 Timber.e(e)
-                localNoteRepository.addNote(note = note.copy(isInSync = false))
-            }
-
-
-        }
-    }
-
-    override suspend fun syncNote(noteId: String) {
-        val note = localNoteRepository.getLocalNoteById(noteId).first() ?: return
-        val result = remoteNoteRepository.getRemoteNoteById(noteId)
-        when(result){
-            is RemoteDataResult.Error -> {
-                // Note not found in the firestore so we update it
-                remoteNoteRepository.saveNoteRemote(note = note)
-            }
-            is RemoteDataResult.Success -> {
-
             }
         }
     }
 
     override suspend fun deleteNoteById(noteId: String) {
-        withContext(dispatcherProvider.io){
+        withContext(dispatcherProvider.io) {
             localNoteRepository.deleteLocalNoteById(noteId = noteId)
         }
     }

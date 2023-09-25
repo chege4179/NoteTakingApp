@@ -46,18 +46,18 @@ class SyncNotesWorker(
             val outOfSyncNotes = localNoteRepository.getNotesBySyncStatus(isInSync = false)
             if (outOfSyncNotes.isNotEmpty()) {
                 try {
-                    startForegroundService(notificationInfo = "Trying to sync your notes to the cloud.....")
-                    val authorId = inputData.getString("noteAuthorId") ?: return@withContext Result.success()
-                    if (authorId == ""){
-                        return@withContext Result.success()
-                    }
-                    localNoteRepository.updateNoteAuthorId(noteAuthorId = authorId)
-                    remoteNoteRepository.deleteAllNotes(authorId = authorId)
-                    val localNotes = localNoteRepository.getLocalNotes().first()
-                    localNotes.forEach { note ->
-                        remoteNoteRepository.saveNoteRemote(note = note)
-                    }
-                    localNoteRepository.updateNoteSyncStatus(syncStatus = true)
+//                    startForegroundService(notificationInfo = "Trying to sync your notes to the cloud.....")
+//                    val authorId = inputData.getString("noteAuthorId") ?: return@withContext Result.success()
+//                    if (authorId == ""){
+//                        return@withContext Result.success()
+//                    }
+//                    localNoteRepository.updateNoteAuthorId(noteAuthorId = authorId)
+//                    remoteNoteRepository.deleteAllNotes(authorId = authorId)
+//                    val localNotes = localNoteRepository.getLocalNotes().first()
+//                    localNotes.forEach { note ->
+//                        remoteNoteRepository.saveNoteRemote(note = note)
+//                    }
+//                    localNoteRepository.updateNoteSyncStatus(syncStatus = true)
                     startForegroundService(notificationInfo = "Sync successful")
                     return@withContext Result.success()
                 } catch (e: Throwable) {

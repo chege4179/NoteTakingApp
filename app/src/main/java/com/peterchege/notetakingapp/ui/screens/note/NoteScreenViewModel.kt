@@ -18,8 +18,7 @@ package com.peterchege.notetakingapp.ui.screens.note
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.peterchege.notetakingapp.data.local.LocalNoteRepository
-import com.peterchege.notetakingapp.domain.models.Note
+import com.peterchege.notetakingapp.core.api.responses.Note
 import com.peterchege.notetakingapp.domain.repository.OfflineFirstNoteRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch

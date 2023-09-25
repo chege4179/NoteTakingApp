@@ -40,8 +40,8 @@ val repositoryModule = module {
     }
     single<AuthRepository> {
         AuthRepositoryImpl(
-            auth = get(),
-            syncNotesWorkManager = get(),
+            defaultAuthProvider = get(),
+            noteService = get(),
         )
     }
 
@@ -55,7 +55,7 @@ val repositoryModule = module {
     single<RemoteNoteRepository> {
         RemoteNoteRepositoryImpl(
             defaultDispatcherProvider = get(),
-            fireStore = get(),
+            noteService = get(),
         )
     }
     single<OfflineFirstNoteRepository> {

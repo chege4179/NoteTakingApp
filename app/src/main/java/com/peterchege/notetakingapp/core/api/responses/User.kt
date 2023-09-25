@@ -13,10 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.domain.models
+package com.peterchege.notetakingapp.core.api.responses
 
-sealed interface RemoteDataResult<out T : Any> {
-    data class Success<out T : Any>(val data: T) : RemoteDataResult<T>
-    data class Error(val message: String) : RemoteDataResult<Nothing>
+import kotlinx.serialization.Serializable
 
-}
+@Serializable
+data class User(
+    val userId:String,
+    val email:String,
+    val fullName:String,
+    val imageUrl:String,
+    val password:String,
+    val createdAt:String,
+    val updatedAt:String,
+)

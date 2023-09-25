@@ -15,11 +15,8 @@
  */
 package com.peterchege.notetakingapp.fake
 
-import com.peterchege.notetakingapp.domain.models.AuthResult
-import com.peterchege.notetakingapp.domain.models.User
 import com.peterchege.notetakingapp.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 
 class FakeAuthRepository :AuthRepository {

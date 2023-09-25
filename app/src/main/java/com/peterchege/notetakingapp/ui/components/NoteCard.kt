@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
@@ -53,7 +52,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.ColorUtils
-import com.peterchege.notetakingapp.domain.models.Note
+import com.peterchege.notetakingapp.core.api.responses.Note
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,9 +71,9 @@ fun NoteCardPreview(){
                             noteContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer mattis eu odio vitae venenatis. Integer maximus felis quis consequat iaculis. Ut auctor accumsan ligula eu pretium. Sed aliquam metus quis nisl accumsan volutpat. Donec elementum neque sed luctus accumsan. Proin justo ipsum, sagittis eu massa at, hendrerit pretium neque. Duis rhoncus feugiat sapien pellentesque vehicula. In pharetra orci augue. Proin tincidunt augue venenatis enim interdum convallis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer mattis eu odio vitae venenatis. Integer maximus felis quis consequat iaculis. Ut auctor accumsan ligula eu pretium. Sed aliquam metus quis nisl accumsan volutpat. Donec elementum neque sed luctus accumsan. Proin justo ipsum, sagittis eu massa at, hendrerit pretium neque. Duis rhoncus feugiat sapien pellentesque vehicula. In pharetra orci augue. Proin tincidunt augue venenatis enim interdum convallis.",
                             noteColor = 0xFFE0C090.toInt(),
                             noteAuthorId = "user123",
-                            noteCreatedAt = "2023-07-08",
-                            noteCreatedOn = "2023-07-08 10:00:00",
-                            isInSync = true
+                            createdAt = "2023-07-08",
+                            updatedAt = "dkdkd",
+
                         ),
                         onDeleteClick = {  },
                         onNoteClick = {  },
@@ -152,14 +151,14 @@ fun NoteCard(
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically,
         ){
-            if (isUserLoggedIn){
-                Icon(
-                    imageVector = if(note.isInSync)
-                        Icons.Outlined.Done else Icons.Default.Refresh,
-                    contentDescription = "In Sync",
-                    tint = MaterialTheme.colorScheme.onBackground
-                )
-            }
+//            if (isUserLoggedIn){
+//                Icon(
+//                    imageVector = if(note.isInSync)
+//                        Icons.Outlined.Done else Icons.Default.Refresh,
+//                    contentDescription = "In Sync",
+//                    tint = MaterialTheme.colorScheme.onBackground
+//                )
+//            }
 
             IconButton(
                 onClick = onDeleteClick,

@@ -15,12 +15,10 @@
  */
 package com.peterchege.notetakingapp.fake
 
-import com.peterchege.notetakingapp.domain.models.Note
 import com.peterchege.notetakingapp.domain.repository.OfflineFirstNoteRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import java.util.concurrent.atomic.AtomicBoolean
 
 class FakeOfflineFirstNoteRepository : OfflineFirstNoteRepository {
 

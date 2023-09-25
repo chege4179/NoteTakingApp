@@ -13,22 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.core.di
+package com.peterchege.notetakingapp.core.api.responses
 
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import org.koin.dsl.module
+import kotlinx.serialization.Serializable
 
-val firebaseModule = module {
-    single<FirebaseAuth> {
-        Firebase.auth
-    }
-    single<FirebaseFirestore> {
-        Firebase.firestore
-    }
+@Serializable
+data class Note(
+    val noteAuthorId: String,
+    val noteColor: Int,
+    val noteContent: String,
+    val noteId: String,
+    val noteTitle: String,
+    val updatedAt: String,
+    val createdAt: String,
 
-
-}
+    )

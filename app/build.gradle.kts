@@ -53,7 +53,7 @@ android {
     }
     packaging {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes.add("/META-INF/**")
         }
     }
 }
@@ -86,7 +86,7 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3:1.2.0-alpha07")
+    implementation("androidx.compose.material3:material3:1.2.0-alpha08")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -126,18 +126,30 @@ dependencies {
     implementation ("androidx.room:room-paging:2.5.2")
 
 
+    val  ktor_version = "2.3.3"
+    implementation ("io.ktor:ktor-client-core:$ktor_version")
+    implementation ("io.ktor:ktor-client-android:$ktor_version")
+    implementation ("io.ktor:ktor-client-serialization:$ktor_version")
+    implementation ("io.ktor:ktor-client-logging:$ktor_version")
+    implementation("io.ktor:ktor-client-okhttp:$ktor_version")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+    implementation ("ch.qos.logback:logback-classic:1.3.0")
+
+
     // datastore (core and preferences)
     implementation ("androidx.datastore:datastore:1.0.0")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
 
-    implementation ("com.google.firebase:firebase-crashlytics-ktx:18.4.1")
+    implementation ("com.google.firebase:firebase-crashlytics-ktx:18.4.3")
     implementation ("com.google.firebase:firebase-analytics-ktx:21.3.0")
-    implementation("com.google.firebase:firebase-auth-ktx:22.1.1")
-    implementation("com.google.firebase:firebase-firestore-ktx:24.7.1")
 
     //timber
     implementation("com.jakewharton.timber:timber:5.0.1")
+
+    debugImplementation("com.github.chuckerteam.chucker:library:4.0.0")
+    releaseImplementation("com.github.chuckerteam.chucker:library-no-op:4.0.0")
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 
@@ -157,7 +169,7 @@ dependencies {
 
     testImplementation ("org.robolectric:robolectric:4.10.3")
 
-    val mockkVersion = "1.13.5"
+    val mockkVersion = "1.13.7"
     testImplementation("io.mockk:mockk:${mockkVersion}")
     testImplementation ("io.mockk:mockk-android:${mockkVersion}")
     testImplementation ("io.mockk:mockk-agent:${mockkVersion}")

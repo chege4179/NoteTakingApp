@@ -15,18 +15,26 @@
  */
 package com.peterchege.notetakingapp.domain.repository
 
-import com.peterchege.notetakingapp.domain.models.AuthResult
-import com.peterchege.notetakingapp.domain.models.User
+import com.peterchege.notetakingapp.core.api.NetworkResult
+import com.peterchege.notetakingapp.core.api.requests.LoginBody
+import com.peterchege.notetakingapp.core.api.requests.SignUpBody
+import com.peterchege.notetakingapp.core.api.responses.LoginResponse
+import com.peterchege.notetakingapp.core.api.responses.SignUpResponse
+import com.peterchege.notetakingapp.core.api.responses.User
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
 
-    fun getAuthUser(): Flow<User?>
+    val authUser: Flow<User?>
 
-    fun loginUser(email:String,password:String):Flow<AuthResult>
+    val isUserLoggedIn:Flow<Boolean>
 
-   fun signUpUser(email: String, password:String):Flow<AuthResult>
+    suspend fun loginUser(loginBody: LoginBody):NetworkResult<LoginResponse>
 
-   fun signOutUser()
+   suspend fun signUpUser(signUpBody:SignUpBody):NetworkResult<SignUpResponse>
+
+   suspend fun signOutUser()
+
+   suspend fun setAuthUser(user:User?)
 
 }

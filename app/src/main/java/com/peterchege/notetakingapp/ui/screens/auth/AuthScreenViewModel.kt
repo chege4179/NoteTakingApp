@@ -17,6 +17,9 @@ package com.peterchege.notetakingapp.ui.screens.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.peterchege.notetakingapp.core.api.NetworkResult
+import com.peterchege.notetakingapp.core.api.requests.LoginBody
+import com.peterchege.notetakingapp.core.api.requests.SignUpBody
 import com.peterchege.notetakingapp.core.util.Constants
 import com.peterchege.notetakingapp.core.util.UiEvent
 import com.peterchege.notetakingapp.domain.repository.AuthRepository
@@ -62,7 +65,7 @@ class AuthScreenViewModel(
             started = SharingStarted.WhileSubscribed(5000L),
             initialValue = NetworkStatus.Unknown
         )
-    val authUser = authRepository.getAuthUser()
+    val authUser = authRepository.authUser
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),
@@ -93,33 +96,49 @@ class AuthScreenViewModel(
     fun signUpUser() {
         _formState.value = _formState.value.copy(isLoading = true)
         viewModelScope.launch {
-            authRepository.signUpUser(
+            val signUpBody = SignUpBody(
                 email = _formState.value.email,
-                password = _formState.value.email
-            ).collectLatest {
-                _eventFlow.emit(UiEvent.ShowSnackbar(message = it.msg))
-                _formState.value = _formState.value.copy(isLoading = false)
-                if(it.success){
-                    _eventFlow.emit(UiEvent.Navigate(route = AllNotesScreenDestination))
+                password = _formState.value.password,
+                fullName = "",
+            )
+            val response = authRepository.signUpUser(signUpBody)
+            when (response) {
+                is NetworkResult.Success -> {
+                    _eventFlow.emit(UiEvent.ShowSnackbar(message = response.data.msg))
+                    _formState.value = _formState.value.copy(isLoading = false)
+                    if (response.data.success && response.data.user != null) {
+                        authRepository.setAuthUser(response.data.user)
+                        _eventFlow.emit(UiEvent.Navigate(route = AllNotesScreenDestination))
+                    }
                 }
 
+                else -> {}
             }
-
         }
     }
 
     fun loginUser() {
         _formState.value = _formState.value.copy(isLoading = true)
         viewModelScope.launch {
-            authRepository.loginUser(
+            val loginBody = LoginBody(
                 email = _formState.value.email,
-                password = _formState.value.email
-            ).collectLatest {
-                println(it)
-                _eventFlow.emit(UiEvent.ShowSnackbar(message = it.msg))
-                _formState.value = _formState.value.copy(isLoading = false)
-                if (it.success){
-                    _eventFlow.emit(UiEvent.Navigate(route = AllNotesScreenDestination))
+                password = _formState.value.password
+            )
+            val response = authRepository.loginUser(loginBody)
+            when(response){
+                is NetworkResult.Success -> {
+                    _formState.value = _formState.value.copy(isLoading = false)
+                    _eventFlow.emit(UiEvent.ShowSnackbar(message = response.data.msg))
+                    _formState.value = _formState.value.copy(isLoading = false)
+                    if (response.data.success){
+                        _eventFlow.emit(UiEvent.Navigate(route = AllNotesScreenDestination))
+                    }
+                }
+                is NetworkResult.Error -> {
+                    _formState.value = _formState.value.copy(isLoading = false)
+                }
+                is NetworkResult.Loading -> {
+
                 }
             }
         }

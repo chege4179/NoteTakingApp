@@ -27,8 +27,7 @@ data class NoteEntity (
     val noteContent:String,
     val noteColor:Int,
     val noteAuthorId:String,
-    val noteCreatedAt:String,
-    val noteCreatedOn:String,
+    val createdAt:String,
+    val updatedAt:String,
     val isInSync:Boolean,
-    val isDeleted:Boolean = false,
 )

@@ -15,13 +15,12 @@
  */
 package com.peterchege.notetakingapp.data.local
 
+import com.peterchege.notetakingapp.core.api.responses.Note
 import com.peterchege.notetakingapp.core.room.database.NoteTakingAppDatabase
-import com.peterchege.notetakingapp.core.util.DefaultDispatcherProvider
 import com.peterchege.notetakingapp.core.util.DispatcherProvider
 import com.peterchege.notetakingapp.domain.mappers.toEntity
 import com.peterchege.notetakingapp.domain.mappers.toExternalListModel
 import com.peterchege.notetakingapp.domain.mappers.toExternalModel
-import com.peterchege.notetakingapp.domain.models.Note
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -58,7 +57,7 @@ class LocalNoteRepositoryImpl(
 
     override suspend fun addNote(note: Note) {
         withContext(defaultDispatcherProvider.io) {
-            db.noteDao.insertCachedNote(noteEntity = note.toEntity())
+            db.noteDao.insertCachedNote(noteEntity = note.toEntity(isInSync = false))
         }
     }
 

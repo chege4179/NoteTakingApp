@@ -21,8 +21,6 @@ import com.peterchege.notetakingapp.TestDispatcherProvider
 import com.peterchege.notetakingapp.core.work.sync_notes.SyncNotesWorkManager
 import com.peterchege.notetakingapp.data.local.LocalNoteRepository
 import com.peterchege.notetakingapp.data.remote.RemoteNoteRepository
-import com.peterchege.notetakingapp.domain.models.Note
-import com.peterchege.notetakingapp.domain.models.RemoteDataResult
 import com.peterchege.notetakingapp.domain.repository.OfflineFirstNoteRepository
 import com.peterchege.notetakingapp.fake.note1
 import com.peterchege.notetakingapp.fake.note2

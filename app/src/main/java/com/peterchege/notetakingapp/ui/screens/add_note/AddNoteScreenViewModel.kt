@@ -17,16 +17,14 @@ package com.peterchege.notetakingapp.ui.screens.add_note
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.peterchege.notetakingapp.core.api.requests.NoteBody
+import com.peterchege.notetakingapp.core.api.responses.User
 import com.peterchege.notetakingapp.core.util.DispatcherProvider
 import com.peterchege.notetakingapp.core.util.UiEvent
 import com.peterchege.notetakingapp.core.util.generateFormatDate
-import com.peterchege.notetakingapp.core.work.sync_notes.SyncNotesWorkManager
-import com.peterchege.notetakingapp.domain.models.Note
-import com.peterchege.notetakingapp.domain.models.User
 import com.peterchege.notetakingapp.domain.repository.AuthRepository
 import com.peterchege.notetakingapp.domain.repository.OfflineFirstNoteRepository
 import com.peterchege.notetakingapp.ui.screens.destinations.AllNotesScreenDestination
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -36,9 +34,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.time.LocalTime
 import java.util.UUID
 
 
@@ -46,10 +42,10 @@ data class NoteFormState(
     val noteTitle: String = "",
     val noteContent: String = "",
     val noteColor: Int? = null,
-    val isNoteTitleHintVisible:Boolean = true,
-    val isNoteContentHintVisible:Boolean = true
+    val isNoteTitleHintVisible: Boolean = true,
+    val isNoteContentHintVisible: Boolean = true
 
-    )
+)
 
 class AddNoteScreenViewModel(
     val dispatcherProvider: DispatcherProvider,
@@ -58,7 +54,7 @@ class AddNoteScreenViewModel(
 
     ) : ViewModel() {
 
-    val authUser = authRepository.getAuthUser()
+    val authUser = authRepository.authUser
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),
@@ -84,10 +80,12 @@ class AddNoteScreenViewModel(
     fun onChangeNoteColor(noteColor: Int) {
         _noteState.value = _noteState.value.copy(noteColor = noteColor)
     }
-    fun onChangeNoteTitleHintVisiblity(visibility:Boolean){
+
+    fun onChangeNoteTitleHintVisiblity(visibility: Boolean) {
         _noteState.value = _noteState.value.copy(isNoteTitleHintVisible = visibility)
     }
-    fun onChangeNoteContentHintVisiblity(visibility:Boolean){
+
+    fun onChangeNoteContentHintVisiblity(visibility: Boolean) {
         _noteState.value = _noteState.value.copy(isNoteContentHintVisible = visibility)
     }
 
@@ -98,29 +96,28 @@ class AddNoteScreenViewModel(
                 UUID.randomUUID().toString()
             }
 
-            val note = Note(
-                noteId = noteId,
+            val notebody = NoteBody(
                 noteContent = _noteState.value.noteContent,
                 noteTitle = _noteState.value.noteTitle,
-                noteCreatedAt = "",
-                noteCreatedOn = generateFormatDate(date = LocalDate.now()),
                 noteColor = _noteState.value.noteColor ?: 0,
                 noteAuthorId = authUser?.userId ?: "",
-                isInSync = authUser != null,
-
             )
             try {
-                noteRepository.addNote(note = note)
+                noteRepository.addNote(notebody)
                 _eventFlow.emit(UiEvent.ShowSnackbar(message = "Note saved successfully"))
                 _noteState.value = _noteState.value.copy(
                     noteTitle = "",
                     noteContent = "",
                 )
                 _eventFlow.emit(UiEvent.Navigate(AllNotesScreenDestination))
-            }catch (e:Throwable){
+            } catch (e: Throwable) {
                 Timber.tag("Note creation error").d(e)
-                _eventFlow.emit(UiEvent.ShowSnackbar(message =
-                e.message ?: "An error occurred while saving the note"))
+                _eventFlow.emit(
+                    UiEvent.ShowSnackbar(
+                        message =
+                        e.message ?: "An error occurred while saving the note"
+                    )
+                )
             }
 
         }

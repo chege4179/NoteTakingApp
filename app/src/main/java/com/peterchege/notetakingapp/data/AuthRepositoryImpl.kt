@@ -15,95 +15,44 @@
  */
 package com.peterchege.notetakingapp.data
 
-import com.google.firebase.auth.FirebaseAuth
-import com.peterchege.notetakingapp.core.work.sync_notes.SyncNotesWorkManager
-import com.peterchege.notetakingapp.domain.models.AuthResult
-import com.peterchege.notetakingapp.domain.models.User
+import com.peterchege.notetakingapp.core.api.NetworkResult
+import com.peterchege.notetakingapp.core.api.NoteService
+import com.peterchege.notetakingapp.core.api.requests.LoginBody
+import com.peterchege.notetakingapp.core.api.requests.SignUpBody
+import com.peterchege.notetakingapp.core.api.responses.LoginResponse
+import com.peterchege.notetakingapp.core.api.responses.SignUpResponse
+import com.peterchege.notetakingapp.core.api.responses.User
+import com.peterchege.notetakingapp.core.datastore.repository.DefaultAuthProvider
 import com.peterchege.notetakingapp.domain.repository.AuthRepository
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flow
 
 class AuthRepositoryImpl(
-    private val auth: FirebaseAuth,
-    private val syncNotesWorkManager: SyncNotesWorkManager,
+    private val defaultAuthProvider: DefaultAuthProvider,
+    private val noteService: NoteService,
+) : AuthRepository {
 
-    ) : AuthRepository {
-    override fun getAuthUser(): Flow<User?> = flow {
-        val currentUser = auth.currentUser
-        if (currentUser == null) {
-            emit(null)
-        } else {
-            val uris =  currentUser.providerData.map {
+    override val authUser: Flow<User?> = defaultAuthProvider.authUser
 
-                it.photoUrl.toString()
-            }
-            val uri = if (uris.isEmpty()) "" else uris[1]
+    override val isUserLoggedIn: Flow<Boolean> = defaultAuthProvider.isUserLoggedIn
 
-            val user = User(
-                name = currentUser.displayName ?: "",
-                email = currentUser.email ?: "",
-                userId = currentUser.uid,
-                imageUrl = uri,
-            )
-            emit(user)
+    override suspend fun loginUser(loginBody: LoginBody): NetworkResult<LoginResponse> {
+        return noteService.loginUser(loginBody = loginBody)
+    }
+
+    override suspend fun setAuthUser(user: User?) {
+        if (user == null){
+            defaultAuthProvider.unsetLoggedInUser()
+        }else{
+            defaultAuthProvider.setLoggedInUser(user)
         }
     }
 
-    override fun loginUser(email: String, password: String): Flow<AuthResult> = callbackFlow {
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    trySend(
-                        AuthResult(msg = "Sign In Successful", success = true)
-                    )
-                    val currentUser = auth.currentUser
-                    if (currentUser != null){
-                        syncNotesWorkManager.startSyncingNotes(currentUser.uid)
-                    }
-                } else {
-                    trySend(
-                        AuthResult(
-                            msg = task.exception?.message ?: "Authentication failed.",
-                            success = false
-                        )
-                    )
-
-                }
-            }
-
-        awaitClose {  }
-
+    override suspend fun signUpUser(signUpBody: SignUpBody): NetworkResult<SignUpResponse> {
+        return noteService.signUpUser(signUpBody = signUpBody)
     }
 
-    override fun signUpUser(email: String, password: String): Flow<AuthResult> = callbackFlow {
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-
-                if (task.isSuccessful) {
-                    trySend(
-                        AuthResult(
-                            msg = "Sign Up Successful", success = true)
-                    )
-                } else {
-                    println("Task, ${task.exception?.message}")
-                    trySend(
-                        AuthResult(
-                            msg = task.exception?.message ?: "Authentication failed.",
-                            success = false
-                        )
-                    )
-
-                }
-            }
-        awaitClose {  }
-
-    }
-
-    override fun signOutUser() {
-        auth.signOut()
-
+    override suspend fun signOutUser() {
+        defaultAuthProvider.unsetLoggedInUser()
     }
 
 }

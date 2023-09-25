@@ -13,21 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.domain.models
+package com.peterchege.notetakingapp.core.api.requests
 
-import kotlinx.serialization.Serializable
-
-
-@Serializable
-data class Note (
-    val noteId:String,
+data class NoteBody(
     val noteTitle:String,
     val noteContent:String,
-    val noteColor:Int,
     val noteAuthorId:String,
-    val noteCreatedAt:String,
-    val noteCreatedOn:String,
-    val isInSync:Boolean,
-    val isDeleted:Boolean = false,
-
+    val noteColor:Int,
 )

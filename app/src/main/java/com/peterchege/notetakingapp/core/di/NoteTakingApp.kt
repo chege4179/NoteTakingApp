@@ -43,7 +43,7 @@ class NoteTakingApp:Application(), KoinComponent {
             androidLogger()
             androidContext(this@NoteTakingApp)
             workManagerFactory()
-            modules(dispatchersModule + databaseModule + firebaseModule + repositoryModule
+            modules(dispatchersModule + databaseModule + networkModule + repositoryModule
                     + viewModelModule + workModule + datastoreModule)
         }
         setUpWorkerManagerNotificationChannel()

@@ -19,6 +19,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import com.peterchege.notetakingapp.core.datastore.repository.DefaultAuthProvider
+import com.peterchege.notetakingapp.core.datastore.repository.DefaultAuthProviderImpl
 import com.peterchege.notetakingapp.core.datastore.repository.DefaultSettingsProvider
 import com.peterchege.notetakingapp.core.datastore.repository.DefaultSettingsProviderImpl
 import com.peterchege.notetakingapp.core.util.Constants
@@ -40,6 +42,10 @@ val datastoreModule = module {
 
     single<DefaultSettingsProvider>{
         DefaultSettingsProviderImpl(dataStore = get())
+    }
+
+    single<DefaultAuthProvider>{
+        DefaultAuthProviderImpl(context = androidContext())
     }
 
 

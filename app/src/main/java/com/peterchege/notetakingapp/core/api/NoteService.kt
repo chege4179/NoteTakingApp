@@ -13,23 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.data.remote
+package com.peterchege.notetakingapp.core.api
 
-import com.peterchege.notetakingapp.core.api.NetworkResult
+import com.peterchege.notetakingapp.core.api.requests.LoginBody
 import com.peterchege.notetakingapp.core.api.requests.NoteBody
+import com.peterchege.notetakingapp.core.api.requests.SignUpBody
 import com.peterchege.notetakingapp.core.api.requests.UpdateNoteBody
 import com.peterchege.notetakingapp.core.api.responses.AddNoteResponse
 import com.peterchege.notetakingapp.core.api.responses.DeleteNoteByIdResponse
 import com.peterchege.notetakingapp.core.api.responses.GetNotesByUserIdResponse
+import com.peterchege.notetakingapp.core.api.responses.LoginResponse
+import com.peterchege.notetakingapp.core.api.responses.SignUpResponse
 import com.peterchege.notetakingapp.core.api.responses.UpdateNoteByIdResponse
 
-interface RemoteNoteRepository {
+interface NoteService {
+
+    suspend fun loginUser(loginBody: LoginBody):NetworkResult<LoginResponse>
+
+    suspend fun signUpUser(signUpBody: SignUpBody):NetworkResult<SignUpResponse>
 
 
-    suspend fun getAllRemoteNotes(authorId: String): NetworkResult<GetNotesByUserIdResponse>
+    suspend fun addNote(noteBody: NoteBody):NetworkResult<AddNoteResponse>
 
-    suspend fun deleteNoteById(noteId: String): NetworkResult<DeleteNoteByIdResponse>
-    suspend fun saveNoteRemote(noteBody:NoteBody): NetworkResult<AddNoteResponse>
+    suspend fun getNotesByUserId(userId:String):NetworkResult<GetNotesByUserIdResponse>
 
-    suspend fun updateNoteById(updateNote: UpdateNoteBody):NetworkResult<UpdateNoteByIdResponse>
+    suspend fun updateNote(updateNote:UpdateNoteBody):NetworkResult<UpdateNoteByIdResponse>
+
+    suspend fun deleteNoteById(noteId:String):NetworkResult<DeleteNoteByIdResponse>
+
 }

@@ -18,21 +18,11 @@ package com.peterchege.notetakingapp.ui.screens.search
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.peterchege.notetakingapp.domain.models.Note
+import com.peterchege.notetakingapp.core.api.responses.Note
 import com.peterchege.notetakingapp.domain.repository.OfflineFirstNoteRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 
 sealed interface SearchNotesScreenUiState {

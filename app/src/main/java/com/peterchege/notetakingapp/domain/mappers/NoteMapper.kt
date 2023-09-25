@@ -15,14 +15,11 @@
  */
 package com.peterchege.notetakingapp.domain.mappers
 
+import com.peterchege.notetakingapp.core.api.responses.Note
 import com.peterchege.notetakingapp.core.room.entites.NoteEntity
-import com.peterchege.notetakingapp.domain.models.Note
 
 fun List<NoteEntity>.toExternalListModel():List<Note>{
     return this.map { it.toExternalModel() }
-}
-fun List<Note>.toEntityListModel():List<NoteEntity>{
-    return this.map { it.toEntity() }
 }
 
 fun NoteEntity.toExternalModel():Note {
@@ -32,51 +29,20 @@ fun NoteEntity.toExternalModel():Note {
         noteContent = noteContent,
         noteColor = noteColor,
         noteAuthorId = noteAuthorId,
-        noteCreatedAt = noteCreatedAt,
-        noteCreatedOn = noteCreatedOn,
-        isInSync = isInSync,
-        isDeleted = isDeleted,
+        createdAt = createdAt,
+        updatedAt = updatedAt
     )
 }
 
-fun Note.toEntity():NoteEntity {
+fun Note.toEntity(isInSync:Boolean):NoteEntity {
     return NoteEntity(
         noteId = noteId,
         noteTitle =noteTitle,
         noteContent = noteContent,
         noteColor = noteColor,
         noteAuthorId = noteAuthorId,
-        noteCreatedAt = noteCreatedAt,
-        noteCreatedOn = noteCreatedOn,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
         isInSync = isInSync,
-        isDeleted = isDeleted,
-    )
-}
-
-fun Note.noteToNoteMap(): Map<String, Any> {
-    return mapOf(
-        "noteId" to this.noteId,
-        "noteTitle" to this.noteTitle,
-        "noteContent" to this.noteContent,
-        "noteColor" to this.noteColor,
-        "noteAuthorId" to this.noteAuthorId,
-        "noteCreatedAt" to this.noteCreatedAt,
-        "noteCreatedOn" to this.noteCreatedOn,
-        "isInSync" to this.isInSync,
-        "isDeleted" to this.isDeleted
-    )
-}
-
-fun Map<String, Any>.noteMapToNote(): Note {
-    return Note(
-        noteId = this["noteId"] as String,
-        noteTitle = this["noteTitle"] as String,
-        noteContent = this["noteContent"] as String,
-        noteColor = this["noteColor"] as Int,
-        noteAuthorId = this["noteAuthorId"] as String,
-        noteCreatedAt = this["noteCreatedAt"] as String,
-        noteCreatedOn = this["noteCreatedOn"] as String,
-        isInSync = this["isInSync"] as Boolean,
-        isDeleted = this["isDeleted"] as Boolean,
     )
 }
