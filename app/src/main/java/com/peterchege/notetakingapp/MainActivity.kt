@@ -21,30 +21,22 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.work.Configuration
-import androidx.work.WorkManager
 import androidx.work.WorkerFactory
 import com.peterchege.notetakingapp.core.util.Constants
-import com.peterchege.notetakingapp.domain.repository.SettingsRepository
-import com.peterchege.notetakingapp.ui.screens.NavGraph
 import com.peterchege.notetakingapp.ui.screens.NavGraphs
-import com.peterchege.notetakingapp.ui.screens.auth.AuthScreenViewModel
 import com.peterchege.notetakingapp.ui.screens.destinations.AllNotesScreenDestination
-import com.peterchege.notetakingapp.ui.screens.destinations.AuthScreenDestination
+import com.peterchege.notetakingapp.ui.screens.login.LoginScreenViewModel
 import com.peterchege.notetakingapp.ui.theme.NoteTakingAppTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
 import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity(), Configuration.Provider {
 
-    private val viewModel by inject<AuthScreenViewModel>()
+    private val viewModel by inject<LoginScreenViewModel>()
     private val workerFactory: WorkerFactory by inject()
 
     override val workManagerConfiguration: Configuration = Configuration.Builder()

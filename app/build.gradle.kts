@@ -81,12 +81,12 @@ kotlin {
 dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.activity:activity-compose:1.8.0")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3:1.2.0-alpha08")
+    implementation("androidx.compose.material3:material3:1.2.0-alpha10")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -97,9 +97,9 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
 
-    implementation("androidx.compose.foundation:foundation:1.5.1")
-    implementation("androidx.compose.foundation:foundation-layout:1.5.1")
-    implementation ("androidx.compose.material:material-icons-extended:1.6.0-alpha05")
+    implementation("androidx.compose.foundation:foundation:1.5.3")
+    implementation("androidx.compose.foundation:foundation-layout:1.5.3")
+    implementation ("androidx.compose.material:material-icons-extended:1.6.0-alpha07")
 
 
     implementation ("io.coil-kt:coil-compose:2.4.0")
@@ -120,10 +120,10 @@ dependencies {
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     // room
-    ksp ("androidx.room:room-compiler:2.5.2")
-    implementation ("androidx.room:room-runtime:2.5.2")
-    implementation ("androidx.room:room-ktx:2.5.2")
-    implementation ("androidx.room:room-paging:2.5.2")
+    ksp ("androidx.room:room-compiler:2.6.0")
+    implementation ("androidx.room:room-runtime:2.6.0")
+    implementation ("androidx.room:room-ktx:2.6.0")
+    implementation ("androidx.room:room-paging:2.6.0")
 
 
     val  ktor_version = "2.3.3"
@@ -142,8 +142,8 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
 
-    implementation ("com.google.firebase:firebase-crashlytics-ktx:18.4.3")
-    implementation ("com.google.firebase:firebase-analytics-ktx:21.3.0")
+    implementation ("com.google.firebase:firebase-crashlytics-ktx:18.5.0")
+    implementation ("com.google.firebase:firebase-analytics-ktx:21.4.0")
 
     //timber
     implementation("com.jakewharton.timber:timber:5.0.1")
@@ -165,7 +165,7 @@ dependencies {
 
     implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
-    implementation ("androidx.work:work-runtime-ktx:2.9.0-beta01")
+    implementation ("androidx.work:work-runtime-ktx:2.9.0-rc01")
 
     testImplementation ("org.robolectric:robolectric:4.10.3")
 

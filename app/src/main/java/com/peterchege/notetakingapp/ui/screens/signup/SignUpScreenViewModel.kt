@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.ui.screens.auth
+package com.peterchege.notetakingapp.ui.screens.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -40,11 +39,12 @@ import kotlinx.coroutines.launch
 data class FormState(
     val email: String = "",
     val password: String = "",
+    val fullName:String = "",
     val isPasswordVisible: Boolean = false,
     val isLoading: Boolean = false
 )
 
-class AuthScreenViewModel(
+class SignUpScreenViewModel(
     val authRepository: AuthRepository,
     val networkRepository: NetworkInfoRepository,
     val settingsRepository: SettingsRepository,
@@ -87,8 +87,11 @@ class AuthScreenViewModel(
     fun onChangePassword(text: String) {
         _formState.value = _formState.value.copy(password = text)
     }
+    fun onChangeFullName(text: String) {
+        _formState.value = _formState.value.copy(fullName = text)
+    }
 
-    fun onChangePasswordVisibilty() {
+    fun onChangePasswordVisibility() {
         _formState.value =
             _formState.value.copy(isPasswordVisible = !_formState.value.isPasswordVisible)
     }
@@ -99,7 +102,7 @@ class AuthScreenViewModel(
             val signUpBody = SignUpBody(
                 email = _formState.value.email,
                 password = _formState.value.password,
-                fullName = "",
+                fullName = _formState.value.fullName,
             )
             val response = authRepository.signUpUser(signUpBody)
             when (response) {
@@ -111,35 +114,10 @@ class AuthScreenViewModel(
                         _eventFlow.emit(UiEvent.Navigate(route = AllNotesScreenDestination))
                     }
                 }
-
-                else -> {}
-            }
-        }
-    }
-
-    fun loginUser() {
-        _formState.value = _formState.value.copy(isLoading = true)
-        viewModelScope.launch {
-            val loginBody = LoginBody(
-                email = _formState.value.email,
-                password = _formState.value.password
-            )
-            val response = authRepository.loginUser(loginBody)
-            when(response){
-                is NetworkResult.Success -> {
-                    _formState.value = _formState.value.copy(isLoading = false)
-                    _eventFlow.emit(UiEvent.ShowSnackbar(message = response.data.msg))
-                    _formState.value = _formState.value.copy(isLoading = false)
-                    if (response.data.success){
-                        _eventFlow.emit(UiEvent.Navigate(route = AllNotesScreenDestination))
-                    }
-                }
                 is NetworkResult.Error -> {
-                    _formState.value = _formState.value.copy(isLoading = false)
+                    _eventFlow.emit(UiEvent.ShowSnackbar(response.message))
                 }
-                is NetworkResult.Loading -> {
-
-                }
+                else -> {}
             }
         }
     }

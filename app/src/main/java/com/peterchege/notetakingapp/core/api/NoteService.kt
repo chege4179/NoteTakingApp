@@ -41,4 +41,6 @@ interface NoteService {
 
     suspend fun deleteNoteById(noteId:String):NetworkResult<DeleteNoteByIdResponse>
 
+    suspend fun deleteAllNotesById(userId:String):NetworkResult<DeleteNoteByIdResponse>
+
 }

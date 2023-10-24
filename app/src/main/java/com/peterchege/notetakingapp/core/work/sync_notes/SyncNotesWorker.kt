@@ -23,6 +23,7 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import com.peterchege.notetakingapp.R
+import com.peterchege.notetakingapp.core.api.requests.NoteBody
 import com.peterchege.notetakingapp.core.util.Constants
 import com.peterchege.notetakingapp.data.local.LocalNoteRepository
 import com.peterchege.notetakingapp.data.remote.RemoteNoteRepository
@@ -38,26 +39,34 @@ class SyncNotesWorker(
     val workerParameters: WorkerParameters,
     val localNoteRepository: LocalNoteRepository,
     val remoteNoteRepository: RemoteNoteRepository,
-    val authRepository: AuthRepository,
+
 
     ) : CoroutineWorker(appContext, workerParameters) {
     override suspend fun doWork(): Result {
-        return withContext(Dispatchers.IO){
+        return withContext(Dispatchers.IO) {
             val outOfSyncNotes = localNoteRepository.getNotesBySyncStatus(isInSync = false)
             if (outOfSyncNotes.isNotEmpty()) {
                 try {
-//                    startForegroundService(notificationInfo = "Trying to sync your notes to the cloud.....")
-//                    val authorId = inputData.getString("noteAuthorId") ?: return@withContext Result.success()
-//                    if (authorId == ""){
-//                        return@withContext Result.success()
-//                    }
-//                    localNoteRepository.updateNoteAuthorId(noteAuthorId = authorId)
-//                    remoteNoteRepository.deleteAllNotes(authorId = authorId)
-//                    val localNotes = localNoteRepository.getLocalNotes().first()
-//                    localNotes.forEach { note ->
-//                        remoteNoteRepository.saveNoteRemote(note = note)
-//                    }
-//                    localNoteRepository.updateNoteSyncStatus(syncStatus = true)
+                    startForegroundService(notificationInfo = "Trying to sync your notes to the cloud.....")
+                    val authorId =
+                        inputData.getString("noteAuthorId") ?: return@withContext Result.success()
+                    if (authorId == "") {
+                        return@withContext Result.success()
+                    }
+                    localNoteRepository.updateNoteAuthorId(noteAuthorId = authorId)
+                    remoteNoteRepository.deleteAllNotesById(authorId)
+                    val localNotes = localNoteRepository.getLocalNotes().first()
+                    localNotes.forEach { note ->
+                        remoteNoteRepository.saveNoteRemote(
+                            noteBody = NoteBody(
+                                noteTitle = note.noteTitle,
+                                noteContent = note.noteContent,
+                                noteColor = note.noteColor,
+                                noteAuthorId = note.noteAuthorId,
+                            )
+                        )
+                    }
+                    localNoteRepository.updateNoteSyncStatus(syncStatus = true)
                     startForegroundService(notificationInfo = "Sync successful")
                     return@withContext Result.success()
                 } catch (e: Throwable) {
@@ -109,7 +118,7 @@ class SyncNotesWorkerFactory(
                     workerParameters = workerParameters,
                     localNoteRepository = localNoteRepository,
                     remoteNoteRepository = remoteNoteRepository,
-                    authRepository = authRepository,
+
                 )
 
             else -> null

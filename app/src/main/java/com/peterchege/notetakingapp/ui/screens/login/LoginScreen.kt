@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.peterchege.notetakingapp.ui.screens.auth
+package com.peterchege.notetakingapp.ui.screens.login
 
 import android.annotation.SuppressLint
-import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.R
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -45,16 +41,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -64,38 +59,37 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.peterchege.notetakingapp.core.util.UiEvent
 import com.peterchege.notetakingapp.domain.repository.NetworkStatus
-import com.peterchege.notetakingapp.ui.screens.destinations.AllNotesScreenDestination
+import com.peterchege.notetakingapp.ui.screens.destinations.SignUpScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.getViewModel
 
 
-
 @Destination
 @Composable
-fun AuthScreen(
+fun LoginScreen(
     navigator: DestinationsNavigator,
-
-    ) {
-    val viewModel = getViewModel<AuthScreenViewModel>()
+) {
+    val viewModel = getViewModel<LoginScreenViewModel>()
     val networkStatus by viewModel.networkStatus.collectAsStateWithLifecycle()
     val formState by viewModel.formState.collectAsStateWithLifecycle()
     val authUser by viewModel.authUser.collectAsStateWithLifecycle()
 
 
-    AuthScreenContent(
+    LoginScreenContent(
         navigator = navigator,
         networkStatus = networkStatus,
         eventFlow = viewModel.eventFlow,
         formState = formState,
-        onChangeEmail = viewModel::onChangeEmail ,
-        onChangePassword =  viewModel::onChangePassword ,
-        signUpUser =viewModel::signUpUser,
-        loginUser = viewModel::loginUser ,
-        onChangePasswordVisibility =  viewModel::onChangePasswordVisibilty ,
+        onChangeEmail = viewModel::onChangeEmail,
+        onChangePassword = viewModel::onChangePassword,
+        loginUser = viewModel::loginUser,
+        navigateToSignUpScreen = {
+            navigator.navigate(SignUpScreenDestination)
+        },
+        onChangePasswordVisibility = viewModel::onChangePasswordVisibilty,
     )
 
 
@@ -105,22 +99,22 @@ fun AuthScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun AuthScreenContent(
+fun LoginScreenContent(
     navigator: DestinationsNavigator,
     networkStatus: NetworkStatus,
     eventFlow: SharedFlow<UiEvent>,
     formState: FormState,
     onChangeEmail: (String) -> Unit,
     onChangePassword: (String) -> Unit,
-    signUpUser: () -> Unit,
     loginUser: () -> Unit,
     onChangePasswordVisibility: () -> Unit,
+    navigateToSignUpScreen: () -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) {
 
-        val snackbarHostState = SnackbarHostState()
+        val snackbarHostState = remember { SnackbarHostState() }
         val keyboardController = LocalSoftwareKeyboardController.current
 
 
@@ -129,7 +123,6 @@ fun AuthScreenContent(
             eventFlow.collectLatest { event ->
                 when (event) {
                     is UiEvent.ShowSnackbar -> {
-                        Toast.makeText(context,event.message,Toast.LENGTH_SHORT).show()
                         snackbarHostState.showSnackbar(
                             message = event.message
                         )
@@ -147,7 +140,9 @@ fun AuthScreenContent(
             snackbarHost = {
                 SnackbarHost(hostState = snackbarHostState)
             },
-            modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
         ) {
             Box(
                 modifier = Modifier
@@ -245,11 +240,10 @@ fun AuthScreenContent(
                         ),
                         onClick = {
                             keyboardController?.hide()
-                            signUpUser()
+                            navigateToSignUpScreen()
 
                         }
-                    )
-                    {
+                    ) {
                         Text(
                             text = "Sign Up",
                             fontWeight = FontWeight.Bold,

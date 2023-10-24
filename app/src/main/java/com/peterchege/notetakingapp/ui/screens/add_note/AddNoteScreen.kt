@@ -109,7 +109,7 @@ fun AddNoteScreenContent(
     val titleState = noteState.noteTitle
     val contentState = noteState.noteContent
     val noteColor = noteState.noteColor
-    val snackbarHostState = SnackbarHostState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     val noteBackgroundAnimatable = remember {
         Animatable(

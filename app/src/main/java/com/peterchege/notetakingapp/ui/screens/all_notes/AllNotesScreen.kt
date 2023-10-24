@@ -259,7 +259,7 @@ fun AllNotesScreenContent(
                             LazyColumn(
                                 modifier = Modifier.fillMaxSize(),
                             ) {
-                                items(items = notes, key = { note -> note.noteId }) { note ->
+                                items(items = notes) { note ->
                                     NoteCard(
                                         modifier = Modifier
                                             .fillMaxWidth()

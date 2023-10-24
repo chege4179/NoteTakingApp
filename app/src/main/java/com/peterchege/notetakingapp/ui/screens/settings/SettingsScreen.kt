@@ -20,14 +20,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -38,7 +37,7 @@ import com.peterchege.notetakingapp.core.util.Constants
 import com.peterchege.notetakingapp.ui.components.ErrorComponent
 import com.peterchege.notetakingapp.ui.components.LoadingComponent
 import com.peterchege.notetakingapp.ui.components.SettingsInfoCard
-import com.peterchege.notetakingapp.ui.screens.destinations.AuthScreenDestination
+import com.peterchege.notetakingapp.ui.screens.destinations.LoginScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
@@ -56,7 +55,7 @@ fun SettingsScreen(
         uiState = uiState,
         onChangeTheme = viewModel::setTheme,
         onChangeSyncSetting = viewModel::setSyncSetting,
-        navigateToAuthScreen = { navigator.navigate(AuthScreenDestination) }
+        navigateToAuthScreen = { navigator.navigate(LoginScreenDestination) }
     )
 
 }

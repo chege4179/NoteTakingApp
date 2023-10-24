@@ -17,9 +17,11 @@ package com.peterchege.notetakingapp.core.api
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.addDefaultResponseValidation
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.kotlinx.serializer.KotlinxSerializer
 import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
@@ -29,11 +31,12 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
 import org.koin.android.BuildConfig
 
 class HttpClientFactory {
 
-    fun create(engine: HttpClientEngine) = HttpClient(engine) {
+    fun create(engine: HttpClientEngine) = HttpClient(Android) {
 
         install(ContentNegotiation) {
             json(
@@ -43,10 +46,12 @@ class HttpClientFactory {
                     ignoreUnknownKeys = true
                 }
             )
+
         }
         install(DefaultRequest) {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
         }
+
         expectSuccess = true
         addDefaultResponseValidation()
         if (BuildConfig.DEBUG) {

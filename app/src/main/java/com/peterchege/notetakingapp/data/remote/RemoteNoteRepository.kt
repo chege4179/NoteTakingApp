@@ -32,4 +32,6 @@ interface RemoteNoteRepository {
     suspend fun saveNoteRemote(noteBody:NoteBody): NetworkResult<AddNoteResponse>
 
     suspend fun updateNoteById(updateNote: UpdateNoteBody):NetworkResult<UpdateNoteByIdResponse>
+
+    suspend fun deleteAllNotesById(userId:String):NetworkResult<DeleteNoteByIdResponse>
 }

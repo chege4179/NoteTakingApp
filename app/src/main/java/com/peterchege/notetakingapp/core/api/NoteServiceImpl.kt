@@ -32,12 +32,11 @@ import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.put
+import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import io.ktor.util.InternalAPI
 
-@OptIn(InternalAPI::class)
 class NoteServiceImpl(
     val client: HttpClient,
 ) : NoteService {
@@ -47,7 +46,7 @@ class NoteServiceImpl(
             client.post{
                 url(urlString = "${Constants.BASE_URL}/user/login")
                 contentType(ContentType.Application.Json)
-                body = loginBody
+                setBody(loginBody)
             }.body()
         }
     }
@@ -57,7 +56,7 @@ class NoteServiceImpl(
             client.post{
                 url(urlString = "${Constants.BASE_URL}/user/signup")
                 contentType(ContentType.Application.Json)
-                body = signUpBody
+                setBody(signUpBody)
             }.body()
         }
     }
@@ -67,7 +66,7 @@ class NoteServiceImpl(
             client.post{
                 url(urlString = "${Constants.BASE_URL}/note/add")
                 contentType(ContentType.Application.Json)
-                body = noteBody
+                setBody(noteBody)
             }.body()
         }
     }
@@ -95,7 +94,16 @@ class NoteServiceImpl(
             client.put{
                 url(urlString = "${Constants.BASE_URL}/note/update")
                 contentType(ContentType.Application.Json)
-                body = updateNote
+                setBody(updateNote)
+            }.body()
+        }
+    }
+
+    override suspend fun deleteAllNotesById(userId: String): NetworkResult<DeleteNoteByIdResponse> {
+        return safeApiCall {
+            client.delete{
+                url(urlString = "${Constants.BASE_URL}/note/delete/all/${userId}")
+                contentType(ContentType.Application.Json)
             }.body()
         }
     }

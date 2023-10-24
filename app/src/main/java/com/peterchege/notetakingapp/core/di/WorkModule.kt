@@ -41,7 +41,6 @@ val workModule = module {
         SyncNotesWorker(
             localNoteRepository = get(),
             remoteNoteRepository = get(),
-            authRepository = get(),
             appContext = androidContext(),
             workerParameters = get(),
         )

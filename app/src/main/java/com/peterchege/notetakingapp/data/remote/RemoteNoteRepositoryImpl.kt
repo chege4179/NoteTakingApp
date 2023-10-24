@@ -46,4 +46,8 @@ class RemoteNoteRepositoryImpl(
     override suspend fun updateNoteById(updateNote: UpdateNoteBody): NetworkResult<UpdateNoteByIdResponse> {
         return noteService.updateNote(updateNote)
     }
+
+    override suspend fun deleteAllNotesById(userId: String): NetworkResult<DeleteNoteByIdResponse> {
+        return noteService.deleteAllNotesById(userId)
+    }
 }
